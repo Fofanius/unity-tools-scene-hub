@@ -1,17 +1,7 @@
 ﻿{
   "name": "com.fofanius.scenehub",
-  "version": "1.0.0",
   "displayName": "Scene Hub [Editor]",
-  "description": "Editor utility, that help you to switch between scenes.",
+  "version": "1.0.0",
   "unity": "2019.4",
-  "author": {
-    "name": "Fofanius",
-    "email": "vova19007@gmail.com",
-    "url": "https://github.com/Fofanius"
-  },
-  "keywords": [
-    "Editor",
-    "Scene",
-    "Managment"
-  ]
+  "description": "Editor utility, that help you to switch between scenes."
 }
