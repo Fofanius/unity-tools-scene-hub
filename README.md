@@ -1,3 +1,4 @@
 # SCENE HUB
 
-// TODO: добавить сюда описание
+- [English description](Documentation/EN.md)
+- [Русское описание](Documentation/RU.md)
