@@ -35,7 +35,7 @@ public class UploadPackageEditor : EditorWindow
 
         using (var sw = cmd.StandardInput)
         {
-            sw.WriteLine($"git subtree split --prefix=SceneHubAssets/SceneHub --branch {_branchName}");
+            sw.WriteLine($"git subtree split --prefix=SceneHub/Assets/SceneHub --branch {_branchName}");
             sw.WriteLine($"git tag {_version} {_branchName}");
             sw.WriteLine($"git push origin {_branchName} --tags");
         }
