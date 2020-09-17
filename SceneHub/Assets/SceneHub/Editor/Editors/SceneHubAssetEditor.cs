@@ -54,14 +54,14 @@ namespace SceneHub
                         EditorGUILayout.BeginVertical(GUILayout.Width(70));
                         {
                             GUI.enabled = i > 0;
-                            if (GUILayout.Button("Поднять")) _list.MoveArrayElement(i, i - 1);
+                            if (GUILayout.Button("Move up")) _list.MoveArrayElement(i, i - 1);
                             GUI.enabled = i < _list.arraySize - 1;
-                            if (GUILayout.Button("Опустить")) _list.MoveArrayElement(i, i + 1);
+                            if (GUILayout.Button("Mode down")) _list.MoveArrayElement(i, i + 1);
                             GUI.enabled = true;
 
                             GUI.color = Color.red;
                             {
-                                if (GUILayout.Button("Удалить"))
+                                if (GUILayout.Button("Delete"))
                                 {
                                     _list.DeleteArrayElementAtIndex(i);
                                 }
@@ -75,7 +75,7 @@ namespace SceneHub
                     EditorGUILayout.Space();
                 }
 
-                if (GUILayout.Button("Добавить"))
+                if (GUILayout.Button("Add"))
                 {
                     _list.arraySize++;
                 }
