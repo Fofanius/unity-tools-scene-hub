@@ -83,7 +83,7 @@ namespace SceneHub
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
-                        if (GUILayout.Button($"{info.Title}"))
+                        if (GUILayout.Button(info.SafeTitle))
                         {
                             Change(info.Scene, false);
                         }
