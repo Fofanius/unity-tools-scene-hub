@@ -9,7 +9,7 @@ namespace SceneHub
 {
     public class SceneHubPopup : EditorWindow
     {
-        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Перейти и запустить PlayMode.");
+        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
 
         private List<SceneHubAsset> _assets;
         private Vector2 _scroll;
@@ -45,7 +45,7 @@ namespace SceneHub
         {
             if (_assets.IsNullOrEmpty())
             {
-                EditorGUILayout.LabelField("Нет доступных сцен . . . ");
+                EditorGUILayout.LabelField("There are no hub libraries in the project.");
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace SceneHub
 
                 if (asset.Scenes.IsNullOrEmpty())
                 {
-                    EditorGUILayout.LabelField("Сцены не указаны . . .");
+                    EditorGUILayout.LabelField("The collection of scenes is empty.");
                     EditorGUILayout.EndVertical();
                     return;
                 }
