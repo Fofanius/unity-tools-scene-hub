@@ -1,5 +1,5 @@
 {
-    "name": "SceneHub.Editor",
+    "name": "Fofanius.SceneHub.Editor",
     "references": [],
     "includePlatforms": [
         "Editor"
