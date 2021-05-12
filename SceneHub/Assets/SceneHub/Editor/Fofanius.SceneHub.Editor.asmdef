@@ -1,6 +1,9 @@
 {
     "name": "Fofanius.SceneHub.Editor",
-    "references": [],
+    "rootNamespace": "",
+    "references": [
+        "GUID:852c63fc3ca153d48aa04c08da8ed8cc"
+    ],
     "includePlatforms": [
         "Editor"
     ],

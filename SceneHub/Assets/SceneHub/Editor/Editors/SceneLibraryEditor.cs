@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace SceneHub
 {
-    [CustomEditor(typeof(SceneHubAsset))]
-    public class SceneHubAssetEditor : Editor
+    [CustomEditor(typeof(SceneLibrary))]
+    public class SceneLibraryEditor : Editor
     {
         private SerializedProperty _title;
         private SerializedProperty _list;
@@ -14,9 +14,9 @@ namespace SceneHub
 
         private void OnEnable()
         {
-            _title = serializedObject.FindProperty(nameof(SceneHubAsset.Title));
-            _list = serializedObject.FindProperty(nameof(SceneHubAsset.Scenes));
-            _order = serializedObject.FindProperty(nameof(SceneHubAsset.Order));
+            _title = serializedObject.FindProperty("_title");
+            _list = serializedObject.FindProperty("_scenes");
+            _order = serializedObject.FindProperty("_sortingOrder");
         }
 
         public override void OnInspectorGUI()
@@ -45,8 +45,8 @@ namespace SceneHub
                         {
                             var element = _list.GetArrayElementAtIndex(i);
 
-                            EditorGUILayout.PropertyField(element.FindPropertyRelative(nameof(SceneInfo.Title)));
-                            EditorGUILayout.PropertyField(element.FindPropertyRelative(nameof(SceneInfo.Scene)));
+                            EditorGUILayout.PropertyField(element.FindPropertyRelative("_title"));
+                            EditorGUILayout.PropertyField(element.FindPropertyRelative("_sceneAsset"));
                         }
                         EditorGUILayout.EndVertical();
 

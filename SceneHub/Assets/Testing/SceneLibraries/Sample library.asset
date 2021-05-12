@@ -10,14 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c5da2f9a0ec40a4fb1eeb1758427772, type: 3}
-  m_Name: Levels
+  m_Name: Sample library
   m_EditorClassIdentifier: 
-  Title: Levels
-  Order: 0
-  Scenes:
-  - Title: Start
-    Scene: {fileID: 102900000, guid: d10171a129ac07547acf42df579afbb8, type: 3}
-  - Title: Main
-    Scene: {fileID: 102900000, guid: fa6f69322855bf54e87eb626d205321a, type: 3}
-  - Title: House
-    Scene: {fileID: 102900000, guid: 2ab11d8f1df95e041a4af26d355cf629, type: 3}
+  _title: 
+  _sortingOrder: 0
+  _scenes:
+  - _title: 
+    _sceneName: SampleScene
+    _sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}

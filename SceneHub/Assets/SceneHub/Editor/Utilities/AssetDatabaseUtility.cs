@@ -20,10 +20,26 @@ namespace SceneHub.Utilities
                 var assetPath = AssetDatabase.GUIDToAssetPath(guid);
                 var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
 
-                if (asset != null && (condition == null || condition(asset)))
+                if (asset && (condition == null || condition(asset)))
                 {
                     assets.Add(asset);
                 }
+            }
+
+            return assets;
+        }
+
+        public static IEnumerable<SceneAsset> FindScenes()
+        {
+            var assets = new List<SceneAsset>();
+            var guids = AssetDatabase.FindAssets($"t:Scene");
+
+            foreach (var guid in guids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                var asset = AssetDatabase.LoadAssetAtPath<SceneAsset>(assetPath);
+
+                assets.Add(asset);
             }
 
             return assets;
