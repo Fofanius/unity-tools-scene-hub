@@ -12,7 +12,7 @@ namespace SceneHub
         [Tooltip("Display order in the hub-popup.")]
         [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
-        [SerializeField] private List<SceneInfo> _scenes;
+        [SerializeField] private List<SceneInfo> _scenes = new List<SceneInfo>();
 #pragma warning restore 0649
 
         /// <summary>
