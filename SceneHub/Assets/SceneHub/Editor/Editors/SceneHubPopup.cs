@@ -16,6 +16,7 @@ namespace SceneHub
         private List<SceneLibrary> _assets;
         private IEnumerable<SceneAsset> _otherScenes;
         private Vector2 _scroll;
+        private bool _otherScenesFoldout;
 
         private static bool IsEditorFree => !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling;
 
@@ -84,14 +85,17 @@ namespace SceneHub
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                 {
-                    EditorGUILayout.LabelField("Other scenes");
-                    EditorGUILayout.Space();
-
-                    foreach (var sceneAsset in _otherScenes)
+                    _otherScenesFoldout = EditorGUILayout.Foldout(_otherScenesFoldout, "Other scenes");
+                    if (_otherScenesFoldout)
                     {
-                        if (sceneAsset)
+                        EditorGUILayout.Space();
+
+                        foreach (var sceneAsset in _otherScenes)
                         {
-                            DrawSceneAssetMenu(sceneAsset, sceneAsset.name);
+                            if (sceneAsset)
+                            {
+                                DrawSceneAssetMenu(sceneAsset, sceneAsset.name);
+                            }
                         }
                     }
                 }
