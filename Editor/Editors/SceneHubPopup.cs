@@ -11,6 +11,7 @@ namespace SceneHub
     {
         private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
         private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("P", "Ping in project tab.");
+        private readonly GUIContent BUILD_SCENE_ASSET_CONTENT = new GUIContent("B", "Add/Remove from build scenes list.");
 
         private List<SceneLibrary> _assets;
         private IEnumerable<SceneAsset> _otherScenes;
@@ -27,19 +28,28 @@ namespace SceneHub
             window.ShowPopup();
         }
 
-        [MenuItem("Scene Hub/Move To %&q", true)] private static bool ShowValidate() => AssetDatabaseUtility.FindAssetsByType<SceneLibrary>().Count > 0 && IsEditorFree;
+        [MenuItem("Scene Hub/Move To %&q", true)] private static bool ShowValidate() => IsEditorFree;
 
         private void OnEnable()
         {
-            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibrary>(asset => asset.Scenes != default).ToList();
-            _assets.Sort(AssetsComparer);
+            RefreshAssetList();
+            RefreshNonAssetSceneList();
 
+            minSize = new Vector2(300, 200);
+        }
+
+        private void RefreshNonAssetSceneList()
+        {
             var set = new HashSet<SceneAsset>(_assets.SelectMany(x => x.Scenes.Select(y => y.SceneAsset)));
             var sceneAssets = AssetDatabaseUtility.FindScenes();
 
             _otherScenes = sceneAssets.Except(set);
+        }
 
-            minSize = new Vector2(300, 200);
+        private void RefreshAssetList()
+        {
+            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibrary>(asset => asset.Scenes != default).ToList();
+            _assets.Sort(AssetsComparer);
         }
 
         private static int AssetsComparer(SceneLibrary a, SceneLibrary b)
@@ -74,12 +84,28 @@ namespace SceneHub
 
                     foreach (var sceneAsset in _otherScenes)
                     {
-                        DrawSceneAssetMenu(sceneAsset, sceneAsset.name);
+                        if (sceneAsset)
+                        {
+                            DrawSceneAssetMenu(sceneAsset, sceneAsset.name);
+                        }
                     }
                 }
                 EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndScrollView();
+
+            EditorGUILayout.Space();
+
+            DrawHubMenu();
+        }
+
+        private void DrawHubMenu()
+        {
+            if (GUILayout.Button("Refresh"))
+            {
+                RefreshAssetList();
+                RefreshNonAssetSceneList();
+            }
         }
 
         private void DrawAssetMenu(SceneLibrary asset)
@@ -119,8 +145,14 @@ namespace SceneHub
                 }
 
                 var c = GUI.color;
-                GUI.color = Color.cyan;
+                GUI.color = Color.yellow;
                 {
+                    if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
+                    {
+                        ToggleBuildStatus(scene);
+                    }
+
+                    GUI.color = Color.cyan;
                     if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
                     {
                         EditorGUIUtility.PingObject(scene);
@@ -136,6 +168,24 @@ namespace SceneHub
                 GUI.color = c;
             }
             EditorGUILayout.EndHorizontal();
+        }
+
+        private static void ToggleBuildStatus(SceneAsset scene)
+        {
+            if (!scene) return;
+            var path = AssetDatabase.GetAssetPath(scene);
+
+            if (EditorBuildSettings.scenes.Select(x => x.path).Contains(path))
+            {
+                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != path).ToArray();
+            }
+            else
+            {
+                var editorBuildScene = new EditorBuildSettingsScene(path, true);
+                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
+            }
+
+            AssetDatabase.SaveAssets();
         }
 
         private void Change(SceneAsset scene, bool needStartPlaymode)
