@@ -22,10 +22,17 @@ namespace SceneHub
         [MenuItem("Scene Hub/Move To %&q", priority = 100)]
         public static void ShowWindow()
         {
-            var window = GetWindow<SceneHubPopup>();
+            var popup = GetWindow<SceneHubPopup>();
 
-            window.titleContent = new GUIContent("Change Scene");
-            window.ShowPopup();
+            popup.titleContent = new GUIContent("Scene Hub");
+            popup.ShowPopup();
+            popup.minSize = new Vector2(300, 200);
+
+            // show as modal popup
+
+            // var popup = ScriptableObject.CreateInstance(typeof(SceneHubPopup)) as SceneHubPopup;
+            // popup.titleContent = new GUIContent("Scene Hub");
+            // popup.ShowModalUtility();
         }
 
         [MenuItem("Scene Hub/Move To %&q", true)] private static bool ShowValidate() => IsEditorFree;
@@ -34,8 +41,6 @@ namespace SceneHub
         {
             RefreshAssetList();
             RefreshNonAssetSceneList();
-
-            minSize = new Vector2(300, 200);
         }
 
         private void RefreshNonAssetSceneList()
