@@ -5,6 +5,7 @@ SceneHub/[Bb]uild/
 SceneHub/[Bb]uilds/
 SceneHub/[Ll]ogs/
 SceneHub/[Mm]emoryCaptures/
+SceneHub/UserSettings/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
