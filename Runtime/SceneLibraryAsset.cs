@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace SceneHub
 {
-    [CreateAssetMenu(fileName = "SceneHub", menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
-    public sealed class SceneLibrary : ScriptableObject
+    [CreateAssetMenu(fileName = "Scene Library", menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
+    public sealed class SceneLibraryAsset : ScriptableObject
     {
 #pragma warning disable 0649
         [Tooltip("Library custom name.")]
@@ -12,7 +12,7 @@ namespace SceneHub
         [Tooltip("Display order in the hub-popup.")]
         [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
-        [SerializeField] private List<SceneInfo> _scenes = new List<SceneInfo>();
+        [SerializeField] private List<SceneReference> _scenes = new List<SceneReference>();
 #pragma warning restore 0649
 
         /// <summary>
@@ -28,12 +28,12 @@ namespace SceneHub
         /// <summary>
         /// Library scenes.
         /// </summary>
-        public IReadOnlyList<SceneInfo> Scenes => _scenes;
+        public IReadOnlyList<SceneReference> Scenes => _scenes;
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            _scenes.ForEach(x => x.Validate());
+            _scenes.ForEach(x => x.OnValidate());
         }
 #endif
     }

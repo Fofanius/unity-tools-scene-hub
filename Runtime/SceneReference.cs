@@ -3,13 +3,13 @@
 namespace SceneHub
 {
     [System.Serializable]
-    public sealed class SceneInfo
+    public sealed class SceneReference : ISceneReference
     {
 #pragma warning disable 0649
         [Tooltip("Custom title")]
         [SerializeField] private string _title;
         [HideInInspector]
-        [SerializeField] private string _sceneName;
+        [SerializeField] private string _scenePath;
 #if UNITY_EDITOR
         [Tooltip("Scene asset.")]
         [SerializeField] private UnityEditor.SceneAsset _sceneAsset;
@@ -24,19 +24,24 @@ namespace SceneHub
         /// <summary>
         /// Scene asset name.
         /// </summary>
-        public string SceneName => _sceneName;
+        public string ScenePath => _scenePath;
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(_scenePath);
 #if UNITY_EDITOR
         /// <summary>
         /// Exists only when <b>UNITY_EDITOR</b> defined.
         /// </summary>
         public UnityEditor.SceneAsset SceneAsset => _sceneAsset;
 
-        public void Validate()
+        /// <summary>
+        /// Exists only when <b>UNITY_EDITOR</b> defined.
+        /// </summary>
+        internal void OnValidate()
         {
-            _sceneName = _sceneAsset ? _sceneAsset.name : string.Empty;
+            _scenePath = _sceneAsset ? UnityEditor.AssetDatabase.GetAssetPath(_sceneAsset) : string.Empty;
         }
 #endif
 
-        public override string ToString() => $"{_title} ({_sceneName})";
+        public override string ToString() => $"{_title} ({_scenePath})";
     }
 }

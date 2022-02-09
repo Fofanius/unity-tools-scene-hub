@@ -1,29 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SceneHub.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace SceneHub
+namespace SceneHub.Editor
 {
-    public class SceneHubPopup : EditorWindow
+    public partial class SceneHubPopup : EditorWindow
     {
+        private enum PopupTabs
+        {
+            Libraries,
+            ReferenceAssets,
+            Scenes
+        }
+
+        private readonly string[] TOOL_BAR_TABS = new string[] { PopupTabs.Libraries.ToString(), PopupTabs.ReferenceAssets.ToString(), PopupTabs.Scenes.ToString(), };
+
         private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
         private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("P", "Ping in project tab.");
         private readonly GUIContent BUILD_SCENE_ASSET_CONTENT = new GUIContent("B", "Add/Remove from build scenes list.");
 
-        private List<SceneLibrary> _assets;
-        private IEnumerable<SceneAsset> _otherScenes;
+        [SerializeField] private PopupTabs _selectedTab;
+
         private Vector2 _scroll;
-        private bool _otherScenesFoldout;
 
         private static bool IsEditorFree => !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling;
 
         [MenuItem("Scene Hub/Move To %&q", priority = 100)]
         public static void ShowWindow()
         {
-            var popup = GetWindow<SceneHubPopup>();
+            var popup = GetWindow<SceneHubPopup>(true);
 
             popup.titleContent = new GUIContent("Scene Hub");
             popup.ShowPopup();
@@ -40,161 +47,104 @@ namespace SceneHub
 
         private void OnEnable()
         {
-            RefreshAssetList();
-            RefreshNonAssetSceneList();
+            RefreshAll();
         }
 
-        private void RefreshNonAssetSceneList()
+        private void RefreshAll()
         {
-            var set = new HashSet<SceneAsset>(_assets.SelectMany(x => x.Scenes.Select(y => y.SceneAsset)));
-            var sceneAssets = AssetDatabaseUtility.FindScenes();
-
-            _otherScenes = sceneAssets.Except(set);
-        }
-
-        private void RefreshAssetList()
-        {
-            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibrary>(asset => asset.Scenes != default).ToList();
-            _assets.Sort(AssetsComparer);
-        }
-
-        private static int AssetsComparer(SceneLibrary a, SceneLibrary b)
-        {
-            var orderCompareResult = a.SortingOrder.CompareTo(b.SortingOrder);
-            return orderCompareResult == default ? string.Compare(a.Title, b.Title, StringComparison.Ordinal) : orderCompareResult;
+            RefreshLibraries();
+            RefreshReferences();
+            RefreshScenes();
         }
 
         private void OnGUI()
         {
+            EditorGUILayout.Space();
+
+            _selectedTab = (PopupTabs)GUILayout.Toolbar((int)_selectedTab, TOOL_BAR_TABS);
+
+            EditorGUILayout.Space();
+
             GUI.enabled = IsEditorFree;
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             {
-                if (_assets.IsNullOrEmpty())
+                switch (_selectedTab)
                 {
-                    EditorGUILayout.LabelField("There are no hub libraries in the project.");
-                }
-                else
-                {
-                    foreach (var asset in _assets)
-                    {
-                        DrawAssetMenu(asset);
-                        EditorGUILayout.Space();
-                    }
-                }
+                    case PopupTabs.Libraries:
+                        DrawLibraries();
+                        break;
 
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                {
-                    _otherScenesFoldout = EditorGUILayout.Foldout(_otherScenesFoldout, "Other scenes");
-                    if (_otherScenesFoldout)
-                    {
-                        EditorGUILayout.Space();
-
-                        foreach (var sceneAsset in _otherScenes)
-                        {
-                            if (sceneAsset)
-                            {
-                                DrawSceneAssetMenu(sceneAsset, sceneAsset.name);
-                            }
-                        }
-                    }
+                    case PopupTabs.ReferenceAssets:
+                        DrawReferences();
+                        break;
+                    case PopupTabs.Scenes:
+                        DrawScenes();
+                        break;
+                    default:
+                        DrawLibraries();
+                        break;
                 }
-                EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.Space();
 
-            DrawHubMenu();
+            DrawBottomMenu();
         }
 
-        private void DrawHubMenu()
+        private void DrawBottomMenu()
         {
-            if (GUILayout.Button("Refresh"))
+            if (GUILayout.Button("Refresh All"))
             {
-                RefreshAssetList();
-                RefreshNonAssetSceneList();
+                RefreshAll();
             }
         }
 
-        private void DrawAssetMenu(SceneLibrary asset)
+        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName)
         {
-            if (!asset) return;
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            {
-                if (GUILayout.Button(asset.GetLibraryDisplayName(), EditorStyles.boldLabel)) EditorGUIUtility.PingObject(asset);
-
-                if (asset.Scenes.IsNullOrEmpty())
-                {
-                    EditorGUILayout.LabelField("The collection of scenes is empty.");
-                    EditorGUILayout.EndVertical();
-                    return;
-                }
-
-                EditorGUILayout.Space();
-
-                foreach (var info in asset.Scenes.Where(info => info != default && info.SceneAsset))
-                {
-                    DrawSceneAssetMenu(info.SceneAsset, info.GetSceneInfoDisplayName());
-                }
-            }
-            EditorGUILayout.EndVertical();
+            var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneReference?.ScenePath);
+            DrawSceneAssetMenu(scene, displayName);
         }
 
         private void DrawSceneAssetMenu(SceneAsset scene, string displayName)
         {
-            if (!scene) return;
-
-            EditorGUILayout.BeginHorizontal();
+            var guiState = GUI.enabled;
+            GUI.enabled = scene;
             {
-                if (GUILayout.Button(displayName))
+                EditorGUILayout.BeginHorizontal();
                 {
-                    Change(scene, false);
+                    if (GUILayout.Button(displayName))
+                    {
+                        Change(scene, false);
+                    }
+
+                    var c = GUI.color;
+                    GUI.color = Color.yellow;
+                    {
+                        if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
+                        {
+                            SceneManagementUtility.ToggleBuildStatus(scene);
+                        }
+
+                        GUI.color = Color.cyan;
+                        if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
+                        {
+                            EditorGUIUtility.PingObject(scene);
+                        }
+
+                        GUI.color = Color.green;
+
+                        if (GUILayout.Button(MOVE_AND_PLAY_CONTENT, GUILayout.Width(40f)))
+                        {
+                            Change(scene, true);
+                        }
+                    }
+                    GUI.color = c;
                 }
-
-                var c = GUI.color;
-                GUI.color = Color.yellow;
-                {
-                    if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        ToggleBuildStatus(scene);
-                    }
-
-                    GUI.color = Color.cyan;
-                    if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        EditorGUIUtility.PingObject(scene);
-                    }
-
-                    GUI.color = Color.green;
-
-                    if (GUILayout.Button(MOVE_AND_PLAY_CONTENT, GUILayout.Width(40f)))
-                    {
-                        Change(scene, true);
-                    }
-                }
-                GUI.color = c;
+                EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private static void ToggleBuildStatus(SceneAsset scene)
-        {
-            if (!scene) return;
-            var path = AssetDatabase.GetAssetPath(scene);
-
-            if (EditorBuildSettings.scenes.Select(x => x.path).Contains(path))
-            {
-                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != path).ToArray();
-            }
-            else
-            {
-                var editorBuildScene = new EditorBuildSettingsScene(path, true);
-                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
-            }
-
-            AssetDatabase.SaveAssets();
+            GUI.enabled = guiState;
         }
 
         private void Change(SceneAsset scene, bool needStartPlaymode)
