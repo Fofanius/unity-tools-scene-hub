@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8785077678308494689}
   - component: {fileID: 115142989514750554}
   - component: {fileID: 8308642414547439820}
-  - component: {fileID: 974922900376633654}
+  - component: {fileID: 3941371963648041522}
   m_Layer: 5
   m_Name: Load Scene #3 [Button]
   m_TagString: Untagged
@@ -30,6 +30,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6871381910607903197}
   m_Father: {fileID: 6807613213902674092}
@@ -122,19 +123,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 974922900376633654}
-        m_TargetAssemblyTypeName: SceneHub.Testing.SampleSceneLoader, Assembly-CSharp
-        m_MethodName: OnLoadClick
-        m_Mode: 1
+      - m_Target: {fileID: 3941371963648041522}
+        m_TargetAssemblyTypeName: SceneHub.UI.LoadSceneByReferenceButtonAddon, Fofanius.SceneHub
+        m_MethodName: LoadScene
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &974922900376633654
+--- !u!114 &3941371963648041522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,11 +144,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4545390619653537187}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d7884634fbf4294cb5463f2dbad5c75, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d6414596c79de545a28c163fb174a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _library: {fileID: 11400000, guid: b705e869d9e7a5f459fbfa5387be87e0, type: 2}
-  _index: 2
+  _sceneReference: {fileID: 11400000, guid: b2796279a6aca254da02828330641f19, type: 2}
+  _loadMode: 0
 --- !u!1 &5755465701309367649
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,6 +177,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7769687473340196700}
   m_RootOrder: 0
@@ -296,7 +298,7 @@ GameObject:
   - component: {fileID: 6807613213891135159}
   - component: {fileID: 6807613213891135158}
   - component: {fileID: 6807613213891135157}
-  - component: {fileID: 6807613213891135156}
+  - component: {fileID: 5794551924225591359}
   m_Layer: 5
   m_Name: Load Scene #1 [Button]
   m_TagString: Untagged
@@ -314,6 +316,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6807613214215086572}
   m_Father: {fileID: 6807613213902674092}
@@ -406,19 +409,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6807613213891135156}
-        m_TargetAssemblyTypeName: SceneHub.Testing.SampleSceneLoader, Assembly-CSharp
-        m_MethodName: OnLoadClick
-        m_Mode: 1
+      - m_Target: {fileID: 5794551924225591359}
+        m_TargetAssemblyTypeName: SceneHub.UI.LoadSceneByReferenceButtonAddon, Fofanius.SceneHub
+        m_MethodName: LoadScene
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6807613213891135156
+--- !u!114 &5794551924225591359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -427,11 +430,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6807613213891135114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d7884634fbf4294cb5463f2dbad5c75, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d6414596c79de545a28c163fb174a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _library: {fileID: 11400000, guid: b705e869d9e7a5f459fbfa5387be87e0, type: 2}
-  _index: 0
+  _sceneReference: {fileID: 11400000, guid: bca61a036bd1e0e448a80675d730541c, type: 2}
+  _loadMode: 0
 --- !u!1 &6807613213902674083
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,6 +464,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6807613213891135115}
   - {fileID: 7769687473340196700}
@@ -565,6 +569,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6807613213891135115}
   m_RootOrder: 0
@@ -685,7 +690,7 @@ GameObject:
   - component: {fileID: 987400980667243354}
   - component: {fileID: 3415099598664734730}
   - component: {fileID: 2324976691897001826}
-  - component: {fileID: 3319107140759336536}
+  - component: {fileID: 6227855747226123334}
   m_Layer: 5
   m_Name: Load Scene #2 [Button]
   m_TagString: Untagged
@@ -703,6 +708,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1373859963144750231}
   m_Father: {fileID: 6807613213902674092}
@@ -795,19 +801,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3319107140759336536}
-        m_TargetAssemblyTypeName: SceneHub.Testing.SampleSceneLoader, Assembly-CSharp
-        m_MethodName: OnLoadClick
-        m_Mode: 1
+      - m_Target: {fileID: 6227855747226123334}
+        m_TargetAssemblyTypeName: SceneHub.UI.LoadSceneByReferenceButtonAddon, Fofanius.SceneHub
+        m_MethodName: LoadScene
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3319107140759336536
+--- !u!114 &6227855747226123334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -816,11 +822,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7467048580821472026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d7884634fbf4294cb5463f2dbad5c75, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d6414596c79de545a28c163fb174a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _library: {fileID: 11400000, guid: b705e869d9e7a5f459fbfa5387be87e0, type: 2}
-  _index: 1
+  _sceneReference: {fileID: 11400000, guid: c514205b24f83e14c89f91012a21c6e6, type: 2}
+  _loadMode: 0
 --- !u!1 &7694789533775380906
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,6 +855,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1873332285871689857}
   m_RootOrder: 0
