@@ -57,7 +57,7 @@ namespace SceneHub.Editor
 
                     foreach (var info in asset.Scenes)
                     {
-                        DrawSceneReferenceMenu(info, info.GetSceneInfoDisplayName());
+                        DrawSceneReferenceMenu(info, info.GetSceneInfoDisplayName(), Color.white);
                     }
                 }
             }
