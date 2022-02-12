@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using SceneHub.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +7,7 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup : EditorWindow
     {
+        [Serializable]
         private enum PopupTabs
         {
             Libraries,
@@ -15,7 +15,7 @@ namespace SceneHub.Editor
             Scenes
         }
 
-        private readonly string[] TOOL_BAR_TABS = new string[] { PopupTabs.Libraries.ToString(), PopupTabs.ReferenceAssets.ToString(), PopupTabs.Scenes.ToString(), };
+        private readonly string[] TOOL_BAR_TABS = new[] { PopupTabs.Libraries.ToString(), PopupTabs.ReferenceAssets.ToString(), PopupTabs.Scenes.ToString(), };
 
         private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
         private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("P", "Ping in project tab.");
@@ -33,8 +33,8 @@ namespace SceneHub.Editor
             var popup = GetWindow<SceneHubPopup>(true);
 
             popup.titleContent = new GUIContent("Scene Hub");
-            popup.ShowPopup();
             popup.minSize = new Vector2(300, 200);
+            popup.Show();
 
             // show as modal popup
 
@@ -101,46 +101,47 @@ namespace SceneHub.Editor
             }
         }
 
-        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName)
+        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName, Color color)
         {
             var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneReference?.ScenePath);
-            DrawSceneAssetMenu(scene, displayName);
+            DrawSceneAssetMenu(scene, displayName, color);
         }
 
-        private void DrawSceneAssetMenu(SceneAsset scene, string displayName)
+        private void DrawSceneAssetMenu(SceneAsset scene, string displayName, Color color)
         {
             var guiState = GUI.enabled;
             GUI.enabled = scene;
             {
                 EditorGUILayout.BeginHorizontal();
                 {
+                    var guiColor = GUI.color;
+
+                    GUI.color = guiColor * color;
                     if (GUILayout.Button(displayName))
                     {
                         Change(scene, false);
                     }
 
-                    var c = GUI.color;
                     GUI.color = Color.yellow;
+                    if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
                     {
-                        if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                        {
-                            SceneManagementUtility.ToggleBuildStatus(scene);
-                        }
-
-                        GUI.color = Color.cyan;
-                        if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                        {
-                            EditorGUIUtility.PingObject(scene);
-                        }
-
-                        GUI.color = Color.green;
-
-                        if (GUILayout.Button(MOVE_AND_PLAY_CONTENT, GUILayout.Width(40f)))
-                        {
-                            Change(scene, true);
-                        }
+                        SceneManagementUtility.ToggleBuildStatus(scene);
                     }
-                    GUI.color = c;
+
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
+                    {
+                        EditorGUIUtility.PingObject(scene);
+                    }
+
+                    GUI.color = Color.green;
+
+                    if (GUILayout.Button(MOVE_AND_PLAY_CONTENT, GUILayout.Width(40f)))
+                    {
+                        Change(scene, true);
+                    }
+
+                    GUI.color = guiColor;
                 }
                 EditorGUILayout.EndHorizontal();
             }

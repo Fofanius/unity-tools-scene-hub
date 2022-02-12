@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneAsset: {fileID: 102900000, guid: d10171a129ac07547acf42df579afbb8, type: 3}
   _scenePath: Assets/Testing/Scenes/Levels/Level 1.unity
+  _displayColor: {r: 1, g: 1, b: 1, a: 1}
