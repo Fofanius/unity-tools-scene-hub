@@ -8,20 +8,20 @@ namespace SceneHub.Utilities
     {
         internal static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || collection.Count() == default;
 
-        internal static string GetLibraryDisplayName(this SceneLibrary library)
+        internal static string GetLibraryDisplayName(this SceneLibraryAsset libraryAsset)
         {
-            if (library)
+            if (libraryAsset)
             {
-                return string.IsNullOrWhiteSpace(library.Title) ? $"[{library.name}]" : $"{library.Title} [{library.name}]";
+                return string.IsNullOrWhiteSpace(libraryAsset.Title) ? $"[{libraryAsset.name}]" : $"{libraryAsset.Title} [{libraryAsset.name}]";
             }
 
-            throw new ArgumentNullException(nameof(library));
+            throw new ArgumentNullException(nameof(libraryAsset));
         }
 
-        internal static string GetSceneInfoDisplayName(this SceneInfo sceneInfo)
+        internal static string GetSceneInfoDisplayName(this SceneReference sceneReference)
         {
-            if (sceneInfo == null) throw new ArgumentNullException(nameof(sceneInfo));
-            return string.IsNullOrWhiteSpace(sceneInfo.Title) ? $"[{sceneInfo.SceneName}]" : $"{sceneInfo.Title} [{sceneInfo.SceneName}]";
+            if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
+            return string.IsNullOrWhiteSpace(sceneReference.Title) ? $"[{sceneReference.ScenePath}]" : $"{sceneReference.Title} [{sceneReference.ScenePath}]";
         }
     }
 }

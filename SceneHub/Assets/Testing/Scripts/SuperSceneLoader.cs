@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class SuperSceneLoader : MonoBehaviour
 {
-    [SerializeField] private SceneLibrary _library;
+    [SerializeField] private SceneLibraryAsset _libraryAsset;
 
     public void OnClick()
     {
-        _library.LoadLibrary(default, OnLibraryLoaded);
+        _libraryAsset.LoadLibrary(default, OnLibraryLoaded);
     }
 
     private void OnLibraryLoaded()
     {
-        Debug.Log("Library is loaded", _library);
+        Debug.Log("Library is loaded", _libraryAsset);
     }
 }
