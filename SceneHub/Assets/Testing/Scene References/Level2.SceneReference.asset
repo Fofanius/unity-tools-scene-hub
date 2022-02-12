@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 12c13d1f018709d4594f881145b8e57d, type: 3}
-  m_Name: Level2
+  m_Name: Level2.SceneReference
   m_EditorClassIdentifier: 
   _sceneAsset: {fileID: 102900000, guid: fa6f69322855bf54e87eb626d205321a, type: 3}
   _scenePath: Assets/Testing/Scenes/Levels/Level 2.unity
