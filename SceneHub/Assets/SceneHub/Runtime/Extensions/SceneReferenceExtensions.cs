@@ -29,9 +29,42 @@ namespace SceneHub
         public static AsyncOperation LoadAsync(this ISceneReference sceneReference, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
-            if (!sceneReference.IsValid) throw new ArgumentException($"Probably scene asset reference is empty ({sceneReference}).", nameof(sceneReference));
+            if (!sceneReference.IsValid) throw new ArgumentException($"Unable to load scene by reference. Reference is invalid. ({sceneReference}).", nameof(sceneReference));
 
             return SceneManager.LoadSceneAsync(sceneReference.ScenePath, mode);
+        }
+
+        public static bool IsLoadedAsMain(this ISceneReference sceneReference)
+        {
+            if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
+            if (!sceneReference.IsValid) throw new ArgumentException($"Unable to check if scene is loaded. Reference is invalid. ({sceneReference}).", nameof(sceneReference));
+
+            var mainScene = SceneManager.GetActiveScene();
+            return IsReferenceOfScene(sceneReference, mainScene);
+        }
+
+        public static bool IsLoaded(this ISceneReference sceneReference)
+        {
+            if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
+            if (!sceneReference.IsValid) throw new ArgumentException($"Unable to check if scene is loaded. Reference is invalid. ({sceneReference}).", nameof(sceneReference));
+
+            var count = SceneManager.sceneCount;
+
+            for (var i = 0; i < count; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (IsReferenceOfScene(sceneReference, scene))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsReferenceOfScene(ISceneReference referenceToCheck, Scene scene)
+        {
+            return referenceToCheck.ScenePath == scene.path;
         }
     }
 }
