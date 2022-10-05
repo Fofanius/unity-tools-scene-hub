@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace SceneHub.Utilities
+namespace SceneHub.Editor.Utilities
 {
     internal static class SceneManagementUtility
     {
@@ -20,24 +20,31 @@ namespace SceneHub.Utilities
             ChangeScene(AssetDatabase.GetAssetPath(scene));
         }
 
-        internal static void ToggleBuildStatus(SceneAsset scene)
+        internal static bool IsBuildScene(SceneAsset scene)
         {
-            ToggleBuildStatus(AssetDatabase.GetAssetPath(scene));
+            return IsBuildScene(AssetDatabase.GetAssetPath(scene));
         }
 
-        internal static void ToggleBuildStatus(string scenePath)
+        internal static bool IsBuildScene(string scenePath)
         {
-            if (EditorBuildSettings.scenes.Select(x => x.path).Contains(scenePath))
-            {
-                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != scenePath).ToArray();
-            }
-            else
-            {
-                var editorBuildScene = new EditorBuildSettingsScene(scenePath, true);
-                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
-            }
+            return EditorBuildSettings.scenes.Select(x => x.path).Contains(scenePath);
+        }
 
-            AssetDatabase.SaveAssets();
+        internal static void AddToBuildList(SceneAsset scene) => AddToBuildList(AssetDatabase.GetAssetPath(scene));
+
+        internal static void AddToBuildList(string scenePath)
+        {
+            if (IsBuildScene(scenePath)) return;
+
+            var editorBuildScene = new EditorBuildSettingsScene(scenePath, true);
+            EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
+        }
+
+        internal static void RemoveFromBuildList(SceneAsset scene) => RemoveFromBuildList(AssetDatabase.GetAssetPath(scene));
+
+        internal static void RemoveFromBuildList(string scenePath)
+        {
+            EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != scenePath).ToArray();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SceneHub.Utilities;
+﻿using SceneHub.Editor.Utilities;
 
 namespace SceneHub.Editor
 {
