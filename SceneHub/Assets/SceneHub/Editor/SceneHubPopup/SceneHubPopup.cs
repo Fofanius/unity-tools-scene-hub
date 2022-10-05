@@ -1,5 +1,5 @@
-﻿using System;
-using SceneHub.Utilities;
+﻿using SceneHub.Editor.UserSettings;
+using SceneHub.Editor.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,21 +7,20 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup : EditorWindow
     {
-        [Serializable]
-        private enum PopupTabs
+        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("▶", "Switch scene and start PlayMode.");
+        private readonly GUIContent MENU_CONTENT = new GUIContent("☰", "Additional options for current scene.");
+
+        private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("Ping", "Ping scene in Project Tab.");
+        private readonly GUIContent ADD_TO_BUILD_SCENE_LIST_CONTENT = new GUIContent("Build list/Add", "Add to build scene list.");
+        private readonly GUIContent REMOVE_FROM_BUILD_SCENE_LIST_CONTENT = new GUIContent("Build list/Remove", "Remove from build scene list.");
+        private readonly GUIContent ADD_TO_FAVORITE_SCENE_ASSET_CONTENT = new GUIContent("Favorite/Add", "Add to favorite list.");
+        private readonly GUIContent REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT = new GUIContent("Favorite/Remove", "Remove from favorite list.");
+
+        private PopupTabs SelectedTab
         {
-            Libraries,
-            ReferenceAssets,
-            Scenes
+            get => SceneHubCommonCacheAsset.instance.SelectedTab;
+            set => SceneHubCommonCacheAsset.instance.SelectedTab = value;
         }
-
-        private readonly string[] TOOL_BAR_TABS = new[] { PopupTabs.Libraries.ToString(), PopupTabs.ReferenceAssets.ToString(), PopupTabs.Scenes.ToString(), };
-
-        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
-        private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("P", "Ping in project tab.");
-        private readonly GUIContent BUILD_SCENE_ASSET_CONTENT = new GUIContent("B", "Add/Remove from build scenes list.");
-
-        [SerializeField] private PopupTabs _selectedTab;
 
         private Vector2 _scroll;
 
@@ -61,7 +60,7 @@ namespace SceneHub.Editor
         {
             EditorGUILayout.Space();
 
-            _selectedTab = (PopupTabs)GUILayout.Toolbar((int)_selectedTab, TOOL_BAR_TABS);
+            SelectedTab = EditorGUILayoutUtility.DrawTabToolbar(SelectedTab);
 
             EditorGUILayout.Space();
 
@@ -69,13 +68,15 @@ namespace SceneHub.Editor
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             {
-                switch (_selectedTab)
+                switch (SelectedTab)
                 {
                     case PopupTabs.Libraries:
                         DrawLibraries();
                         break;
-
-                    case PopupTabs.ReferenceAssets:
+                    case PopupTabs.Favorites:
+                        DrawFavoriteScenes();
+                        break;
+                    case PopupTabs.References:
                         DrawReferences();
                         break;
                     case PopupTabs.Scenes:
@@ -122,18 +123,6 @@ namespace SceneHub.Editor
                         Change(scene, false);
                     }
 
-                    GUI.color = Color.yellow;
-                    if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        SceneManagementUtility.ToggleBuildStatus(scene);
-                    }
-
-                    GUI.color = Color.cyan;
-                    if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        EditorGUIUtility.PingObject(scene);
-                    }
-
                     GUI.color = Color.green;
 
                     if (GUILayout.Button(MOVE_AND_PLAY_CONTENT, GUILayout.Width(40f)))
@@ -141,11 +130,51 @@ namespace SceneHub.Editor
                         Change(scene, true);
                     }
 
+                    if (GUILayout.Button(MENU_CONTENT, GUILayout.Width(24f)))
+                    {
+                        var menu = GetSceneMenu(scene);
+                        menu.ShowAsContext();
+                    }
+
                     GUI.color = guiColor;
                 }
                 EditorGUILayout.EndHorizontal();
             }
             GUI.enabled = guiState;
+        }
+
+        private GenericMenu GetSceneMenu(SceneAsset scene)
+        {
+            var menu = new GenericMenu();
+
+            menu.AddItem(PING_SCENE_ASSET_CONTENT, false, () => EditorGUIUtility.PingObject(scene));
+
+            var isFavorite = IsFavorite(scene);
+            if (isFavorite)
+            {
+                menu.AddDisabledItem(ADD_TO_FAVORITE_SCENE_ASSET_CONTENT, false);
+                menu.AddItem(REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT, false, () => RemoveFromFavorite(scene));
+            }
+            else
+            {
+                menu.AddItem(ADD_TO_FAVORITE_SCENE_ASSET_CONTENT, false, () => AddToFavorite(scene));
+                menu.AddDisabledItem(REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT, false);
+            }
+
+            var isInBuildList = SceneManagementUtility.IsBuildScene(scene);
+
+            if (isInBuildList)
+            {
+                menu.AddDisabledItem(ADD_TO_BUILD_SCENE_LIST_CONTENT, false);
+                menu.AddItem(REMOVE_FROM_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.RemoveFromBuildList(scene));
+            }
+            else
+            {
+                menu.AddItem(ADD_TO_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.AddToBuildList(scene));
+                menu.AddDisabledItem(REMOVE_FROM_BUILD_SCENE_LIST_CONTENT, false);
+            }
+
+            return menu;
         }
 
         private void Change(SceneAsset scene, bool needStartPlaymode)

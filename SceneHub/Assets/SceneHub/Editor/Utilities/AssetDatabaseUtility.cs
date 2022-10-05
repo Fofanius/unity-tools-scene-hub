@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace SceneHub.Utilities
+namespace SceneHub.Editor.Utilities
 {
     public class AssetDatabaseUtility
     {
