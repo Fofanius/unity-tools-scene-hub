@@ -2,7 +2,7 @@
 
 namespace SceneHub.Editor
 {
-    public static class SceneReferenceAssetClickHandler
+    internal static class SceneReferenceAssetClickHandler
     {
         [UnityEditor.Callbacks.OnOpenAsset(2)]
         private static bool OnAssetClick(int instanceID, int line)

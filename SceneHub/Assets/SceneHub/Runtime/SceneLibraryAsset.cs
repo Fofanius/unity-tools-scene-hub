@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SceneHub
 {
-    [CreateAssetMenu(fileName = "Scene Library", menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
+    [CreateAssetMenu(menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
     public sealed class SceneLibraryAsset : ScriptableObject
     {
 #pragma warning disable 0649
@@ -12,7 +13,7 @@ namespace SceneHub
         [Tooltip("Display order in the hub-popup.")]
         [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
-        [SerializeField] private List<SceneReference> _scenes = new List<SceneReference>();
+        [SerializeField] private List<SceneReferenceAsset> _scenes;
 #pragma warning restore 0649
 
         /// <summary>
@@ -25,16 +26,11 @@ namespace SceneHub
         /// </summary>
         public int SortingOrder => _sortingOrder;
 
+        public bool IsValid() => Scenes.Count > 0 && Scenes.All(x => x && x.IsValid);
+        
         /// <summary>
         /// Library scenes.
         /// </summary>
-        public IReadOnlyList<SceneReference> Scenes => _scenes;
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            _scenes.ForEach(x => x.OnValidate());
-        }
-#endif
+        public IReadOnlyList<SceneReferenceAsset> Scenes => _scenes ??= new List<SceneReferenceAsset>();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SceneHub.Editor.Utilities
 {
-    public static class EditorGUILayoutUtility
+    internal static class EditorGUILayoutUtility
     {
         public static T DrawTabToolbar<T>(T current) where T : Enum
         {

@@ -24,7 +24,7 @@ namespace SceneHub.Editor
             {
                 foreach (var reference in _references)
                 {
-                    DrawSceneReferenceMenu(reference, reference.name, reference.DisplayColor);
+                    DrawSceneReferenceMenu(reference, reference.name);
                 }
             }
         }

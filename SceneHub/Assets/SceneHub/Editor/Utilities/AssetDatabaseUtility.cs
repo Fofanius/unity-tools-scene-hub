@@ -4,13 +4,13 @@ using UnityEditor;
 
 namespace SceneHub.Editor.Utilities
 {
-    public class AssetDatabaseUtility
+    internal class AssetDatabaseUtility
     {
         /// <summary>
         /// Проводит поиск всех ассетов по указанному типу.
         /// </summary>
         /// <param name="condition">Правило выборки найденных ассетов в результирующую коллекцию.</param>
-        public static List<T> FindAssetsByType<T>(Func<T, bool> condition = null) where T : UnityEngine.Object
+        internal static List<T> FindAssetsByType<T>(Func<T, bool> condition = null) where T : UnityEngine.Object
         {
             var assets = new List<T>();
             var guids = AssetDatabase.FindAssets($"t:{typeof(T)}");
@@ -29,7 +29,7 @@ namespace SceneHub.Editor.Utilities
             return assets;
         }
 
-        public static IEnumerable<SceneAsset> FindScenes()
+        internal static IEnumerable<SceneAsset> FindScenes()
         {
             var assets = new List<SceneAsset>();
             var guids = AssetDatabase.FindAssets($"t:Scene");
@@ -48,7 +48,7 @@ namespace SceneHub.Editor.Utilities
         /// <summary>
         /// Последовательный вызов <see cref="AssetDatabase.Refresh()"/> и <see cref="AssetDatabase.SaveAssets()"/>.
         /// </summary>
-        public static void RefreshAndSave()
+        internal static void RefreshAndSave()
         {
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();

@@ -15,6 +15,4 @@ MonoBehaviour:
   _title: 
   _sortingOrder: 0
   _scenes:
-  - _title: 
-    _scenePath: Assets/Testing/Scenes/SampleScene.unity
-    _sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
+  - {fileID: 11400000, guid: 067056b06fa8aff4fba9ba804af038db, type: 2}
