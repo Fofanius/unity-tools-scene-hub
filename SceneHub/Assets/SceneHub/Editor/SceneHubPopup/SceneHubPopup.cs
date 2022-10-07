@@ -7,14 +7,17 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup : EditorWindow
     {
+        private const string BUILD_LIST_MENU_CATEGORY = "Build list";
+
         private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("▶", "Switch scene and start PlayMode.");
         private readonly GUIContent MENU_CONTENT = new GUIContent("☰", "Additional options for current scene.");
 
         private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("Ping", "Ping scene in Project Tab.");
-        private readonly GUIContent ADD_TO_BUILD_SCENE_LIST_CONTENT = new GUIContent("Build list/Add", "Add to build scene list.");
-        private readonly GUIContent REMOVE_FROM_BUILD_SCENE_LIST_CONTENT = new GUIContent("Build list/Remove", "Remove from build scene list.");
-        private readonly GUIContent ADD_TO_FAVORITE_SCENE_ASSET_CONTENT = new GUIContent("Favorite/Add", "Add to favorite list.");
-        private readonly GUIContent REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT = new GUIContent("Favorite/Remove", "Remove from favorite list.");
+        private readonly GUIContent ADD_TO_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Add", "Add to build scene list.");
+        private readonly GUIContent REMOVE_FROM_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Remove", "Remove from build scene list.");
+        private readonly GUIContent ENABLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Enable", "Enable scene in build scene list.");
+        private readonly GUIContent DISBLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Disable", "Disable scene in build scene list.");
+
 
         private PopupTabs SelectedTab
         {
@@ -130,6 +133,8 @@ namespace SceneHub.Editor
                         Change(scene, true);
                     }
 
+                    GUI.color = Color.yellow;
+
                     if (GUILayout.Button(MENU_CONTENT, GUILayout.Width(24f)))
                     {
                         var menu = GetSceneMenu(scene);
@@ -149,32 +154,33 @@ namespace SceneHub.Editor
 
             menu.AddItem(PING_SCENE_ASSET_CONTENT, false, () => EditorGUIUtility.PingObject(scene));
 
-            var isFavorite = IsFavorite(scene);
-            if (isFavorite)
-            {
-                menu.AddDisabledItem(ADD_TO_FAVORITE_SCENE_ASSET_CONTENT, false);
-                menu.AddItem(REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT, false, () => RemoveFromFavorite(scene));
-            }
-            else
-            {
-                menu.AddItem(ADD_TO_FAVORITE_SCENE_ASSET_CONTENT, false, () => AddToFavorite(scene));
-                menu.AddDisabledItem(REMOVE_FROM_FAVORITE_SCENE_ASSET_CONTENT, false);
-            }
+            BuildContextMenuForFavoriteScene(menu, scene);
+            BuildContextMenuForBuildScene(menu, scene);
 
+            return menu;
+        }
+
+        private void BuildContextMenuForBuildScene(GenericMenu menu, SceneAsset scene)
+        {
             var isInBuildList = SceneManagementUtility.IsBuildScene(scene);
-
             if (isInBuildList)
             {
-                menu.AddDisabledItem(ADD_TO_BUILD_SCENE_LIST_CONTENT, false);
                 menu.AddItem(REMOVE_FROM_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.RemoveFromBuildList(scene));
+
+                var enabledInBuildList = SceneManagementUtility.IsEnabledInBuildList(scene);
+                if (enabledInBuildList)
+                {
+                    menu.AddItem(DISBLE_IN_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.SetEnabledInBuildList(scene, false));
+                }
+                else
+                {
+                    menu.AddItem(ENABLE_IN_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.SetEnabledInBuildList(scene, true));
+                }
             }
             else
             {
                 menu.AddItem(ADD_TO_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.AddToBuildList(scene));
-                menu.AddDisabledItem(REMOVE_FROM_BUILD_SCENE_LIST_CONTENT, false);
             }
-
-            return menu;
         }
 
         private void Change(SceneAsset scene, bool needStartPlaymode)

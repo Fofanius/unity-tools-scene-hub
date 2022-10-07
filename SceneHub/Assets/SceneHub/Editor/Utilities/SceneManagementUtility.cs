@@ -38,6 +38,8 @@ namespace SceneHub.Editor.Utilities
 
             var editorBuildScene = new EditorBuildSettingsScene(scenePath, true);
             EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
+
+            Logger.Log($"Scene '{scenePath}' <b>added</b> to build scene list.");
         }
 
         internal static void RemoveFromBuildList(SceneAsset scene) => RemoveFromBuildList(AssetDatabase.GetAssetPath(scene));
@@ -45,6 +47,31 @@ namespace SceneHub.Editor.Utilities
         internal static void RemoveFromBuildList(string scenePath)
         {
             EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != scenePath).ToArray();
+            Logger.Log($"Scene '{scenePath}' <b>removed</b> from build scene list.");
+        }
+
+        internal static void SetEnabledInBuildList(SceneAsset scene, bool enabled) => SetEnabledInBuildList(AssetDatabase.GetAssetPath(scene), enabled);
+
+        internal static void SetEnabledInBuildList(string scenePath, bool enabled)
+        {
+            var scenes = EditorBuildSettings.scenes.ToArray();
+
+            var buildScene = scenes.FirstOrDefault(x => x.path == scenePath);
+            if (buildScene == default) return;
+
+            buildScene.enabled = enabled;
+
+            EditorBuildSettings.scenes = scenes;
+
+            Logger.Log($"Scene '{scenePath}' <b>{(enabled ? "enabled" : "disabled")}</b> in build scene list.");
+        }
+
+        internal static bool IsEnabledInBuildList(SceneAsset scene) => IsEnabledInBuildList(AssetDatabase.GetAssetPath(scene));
+
+        internal static bool IsEnabledInBuildList(string scenePath)
+        {
+            var buildScene = EditorBuildSettings.scenes.FirstOrDefault(x => x.path == scenePath);
+            return buildScene?.enabled ?? false;
         }
     }
 }
