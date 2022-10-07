@@ -1,4 +1,5 @@
-﻿using SceneHub.Editor.UserSettings;
+﻿using System;
+using SceneHub.Editor.UserSettings;
 using SceneHub.Editor.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -105,13 +106,13 @@ namespace SceneHub.Editor
             }
         }
 
-        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName, Color color)
+        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName)
         {
             var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneReference?.ScenePath);
-            DrawSceneAssetMenu(scene, displayName, color);
+            DrawSceneAssetMenu(scene, displayName);
         }
 
-        private void DrawSceneAssetMenu(SceneAsset scene, string displayName, Color color)
+        private void DrawSceneAssetMenu(SceneAsset scene, string displayName)
         {
             var guiState = GUI.enabled;
             GUI.enabled = scene;
@@ -120,7 +121,6 @@ namespace SceneHub.Editor
                 {
                     var guiColor = GUI.color;
 
-                    GUI.color = guiColor * color;
                     if (GUILayout.Button(displayName))
                     {
                         Change(scene, false);

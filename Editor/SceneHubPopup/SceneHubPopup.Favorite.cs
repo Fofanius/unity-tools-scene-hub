@@ -29,7 +29,7 @@ namespace SceneHub.Editor
                 for (var i = 0; i < FavoriteScenesCache.Count; i++)
                 {
                     var favorite = FavoriteScenesCache[i];
-                    DrawSceneAssetMenu(favorite, favorite.name, Color.white);
+                    DrawSceneAssetMenu(favorite, favorite.name);
                 }
             }
         }
