@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 namespace SceneHub.UI
 {
+    [AddComponentMenu("Scene Hub/Load Scene Button Addon")]
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Button))]
     public class LoadSceneByReferenceButtonAddon : MonoBehaviour
     {
@@ -16,7 +18,9 @@ namespace SceneHub.UI
         {
             var button = GetComponent<Button>();
 
+            UnityEditor.Events.UnityEventTools.RemovePersistentListener(button.onClick, LoadScene);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(button.onClick, LoadScene);
+
             UnityEditor.EditorUtility.SetDirty(button);
         }
 #endif
