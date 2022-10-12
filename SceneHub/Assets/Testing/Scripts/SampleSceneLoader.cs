@@ -11,7 +11,7 @@ namespace SceneHub.Testing
 
         public void OnLoadClick()
         {
-            _libraryAsset.Scenes[_index].LoadSync();
+            _libraryAsset.Scenes[_index].Load();
         }
     }
 }

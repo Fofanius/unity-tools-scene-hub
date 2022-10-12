@@ -1,5 +1,4 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace SceneHub
 {
@@ -11,21 +10,25 @@ namespace SceneHub
 #endif
         [HideInInspector]
         [SerializeField] private string _scenePath;
-        [SerializeField] private Color _displayColor;
+        [HideInInspector]
+        [SerializeField] private string _sceneName;
 
         public bool IsValid => !string.IsNullOrWhiteSpace(_scenePath);
         public string ScenePath => _scenePath;
-        public Color DisplayColor => _displayColor;
+        public string SceneName => _sceneName;
 
 #if UNITY_EDITOR
-        private void Reset()
-        {
-            _displayColor = Random.ColorHSV(0f, 1f, .2f, .5f, 0.7f, 1f);
-        }
-
         private void OnValidate()
         {
-            _scenePath = _sceneAsset ? UnityEditor.AssetDatabase.GetAssetPath(_sceneAsset) : string.Empty;
+            if (_sceneAsset)
+            {
+                _scenePath = UnityEditor.AssetDatabase.GetAssetPath(_sceneAsset);
+                _sceneName = _sceneAsset.name;
+            }
+            else
+            {
+                _sceneName = _scenePath = string.Empty;
+            }
         }
 #endif
 
