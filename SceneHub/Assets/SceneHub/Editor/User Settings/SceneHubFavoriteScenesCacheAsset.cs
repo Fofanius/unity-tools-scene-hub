@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SceneHub.Editor.UserSettings
 {
     [FilePath("UserSettings/SceneHub/FavoriteScenes.asset", FilePathAttribute.Location.ProjectFolder)]
-    public class SceneHubFavoriteScenesCacheAsset : ScriptableSingleton<SceneHubFavoriteScenesCacheAsset>, IReadOnlyList<SceneAsset>
+    internal class SceneHubFavoriteScenesCacheAsset : ScriptableSingleton<SceneHubFavoriteScenesCacheAsset>, IReadOnlyList<SceneAsset>
     {
         [SerializeField] private List<SceneAsset> _favoriteScenes;
 
@@ -34,7 +34,7 @@ namespace SceneHub.Editor.UserSettings
             EntitiesInternal.RemoveAll(x => x == sceneAsset);
         }
 
-        public void MoveUp(SceneAsset scene)
+        internal void MoveUp(SceneAsset scene)
         {
             var index = EntitiesInternal.IndexOf(scene);
             if (index > 0)
@@ -43,7 +43,7 @@ namespace SceneHub.Editor.UserSettings
             }
         }
 
-        public void MoveDown(SceneAsset scene)
+        internal void MoveDown(SceneAsset scene)
         {
             var index = EntitiesInternal.IndexOf(scene);
             if (index != -1 && index < EntitiesInternal.Count - 1)
@@ -52,7 +52,7 @@ namespace SceneHub.Editor.UserSettings
             }
         }
 
-        public void SetFirst(SceneAsset scene)
+        internal void SetFirst(SceneAsset scene)
         {
             var index = EntitiesInternal.IndexOf(scene);
             if (index == -1) return;
@@ -61,7 +61,7 @@ namespace SceneHub.Editor.UserSettings
             EntitiesInternal.Insert(0, scene);
         }
 
-        public void SetLast(SceneAsset scene)
+        internal void SetLast(SceneAsset scene)
         {
             var index = EntitiesInternal.IndexOf(scene);
             if (index == -1) return;
@@ -81,7 +81,7 @@ namespace SceneHub.Editor.UserSettings
 
         public IEnumerator<SceneAsset> GetEnumerator()
         {
-            return _favoriteScenes.GetEnumerator();
+            return EntitiesInternal.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

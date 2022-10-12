@@ -25,7 +25,7 @@ namespace SceneHub.Editor
             {
                 foreach (var scene in _scenes)
                 {
-                    DrawSceneAssetMenu(scene, scene.name);
+                    DrawSceneAssetMenu(scene, scene.name, AssetDatabase.GetAssetPath(scene));
                 }
             }
         }
