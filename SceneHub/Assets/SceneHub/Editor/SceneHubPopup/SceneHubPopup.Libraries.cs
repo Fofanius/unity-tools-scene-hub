@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SceneHub.Editor.Utilities;
 using SceneHub.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup
     {
+        private readonly GUIContent LOAD_LIBRARY = new GUIContent("↡", "Load all scenes.");
+
         private List<SceneLibraryAsset> _assets;
 
         private void RefreshLibraries()
@@ -45,7 +48,24 @@ namespace SceneHub.Editor
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                if (GUILayout.Button(asset.GetLibraryDisplayName(), EditorStyles.boldLabel)) EditorGUIUtility.PingObject(asset);
+                EditorGUILayout.BeginHorizontal();
+                {
+                    if (GUILayout.Button(asset.GetLibraryDisplayName(), EditorStyles.boldLabel))
+                    {
+                        EditorGUIUtility.PingObject(asset);
+                    }
+
+                    var c = GUI.color;
+                    GUI.color = new Color(.6f, .77f, .92f);
+                    {
+                        if (GUILayout.Button(LOAD_LIBRARY, GUILayout.Width(24f)))
+                        {
+                            SceneManagementUtility.LoadAll(asset);
+                        }
+                    }
+                    GUI.color = c;
+                }
+                EditorGUILayout.EndHorizontal();
 
                 if (asset.Scenes.IsNullOrEmpty())
                 {
@@ -57,7 +77,7 @@ namespace SceneHub.Editor
 
                     foreach (var info in asset.Scenes)
                     {
-                        DrawSceneReferenceMenu(info, info.GetSceneInfoDisplayName(), Color.white);
+                        DrawSceneReferenceMenu(info, info ? info.SceneName : "NULL");
                     }
                 }
             }

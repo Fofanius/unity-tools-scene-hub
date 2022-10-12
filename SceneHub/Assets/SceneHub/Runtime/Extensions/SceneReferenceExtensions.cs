@@ -7,9 +7,17 @@ namespace SceneHub
     public static class SceneReferenceExtensions
     {
         /// <summary>
+        /// <inheritdoc cref="Load(SceneHub.ISceneReference, UnityEngine.SceneManagement.LoadSceneMode)"/>
+        /// </summary>
+        /// <param name="sceneReference"></param>
+        /// <param name="mode"></param>
+        [Obsolete("Obsolete naming. Use Load(ISceneReference, mode) instead!")]
+        public static void LoadSync(this ISceneReference sceneReference, LoadSceneMode mode = LoadSceneMode.Single) => Load(sceneReference, mode);
+
+        /// <summary>
         /// Shortcut to <see cref="SceneManager.LoadScene(string,UnityEngine.SceneManagement.LoadSceneMode)"/>
         /// </summary>
-        public static void LoadSync(this ISceneReference sceneReference, LoadSceneMode mode = LoadSceneMode.Single)
+        public static void Load(this ISceneReference sceneReference, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
 

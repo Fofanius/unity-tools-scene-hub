@@ -25,7 +25,7 @@ namespace SceneHub.UI
         {
             if (_sceneReference && _sceneReference.IsValid)
             {
-                _sceneReference.LoadSync(_loadMode);
+                _sceneReference.Load(_loadMode);
             }
             else
             {

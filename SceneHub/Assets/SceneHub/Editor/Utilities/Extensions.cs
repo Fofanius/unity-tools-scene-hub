@@ -17,11 +17,5 @@ namespace SceneHub.Utilities
 
             throw new ArgumentNullException(nameof(libraryAsset));
         }
-
-        internal static string GetSceneInfoDisplayName(this SceneReference sceneReference)
-        {
-            if (sceneReference == null) throw new ArgumentNullException(nameof(sceneReference));
-            return string.IsNullOrWhiteSpace(sceneReference.Title) ? $"[{sceneReference.ScenePath}]" : $"{sceneReference.Title} [{sceneReference.ScenePath}]";
-        }
     }
 }

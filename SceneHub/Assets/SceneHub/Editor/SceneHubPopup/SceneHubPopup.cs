@@ -1,5 +1,6 @@
 ﻿using System;
-using SceneHub.Utilities;
+using SceneHub.Editor.UserSettings;
+using SceneHub.Editor.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,21 +8,23 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup : EditorWindow
     {
-        [Serializable]
-        private enum PopupTabs
+        private const string BUILD_LIST_MENU_CATEGORY = "Build list";
+
+        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("▶", "Switch scene and start PlayMode.");
+        private readonly GUIContent MENU_CONTENT = new GUIContent("☰", "Additional options for current scene.");
+
+        private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("Ping", "Ping scene in Project Tab.");
+        private readonly GUIContent ADD_TO_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Add", "Add to build scene list.");
+        private readonly GUIContent REMOVE_FROM_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Remove", "Remove from build scene list.");
+        private readonly GUIContent ENABLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Enable", "Enable scene in build scene list.");
+        private readonly GUIContent DISBLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Disable", "Disable scene in build scene list.");
+
+
+        private PopupTabs SelectedTab
         {
-            Libraries,
-            ReferenceAssets,
-            Scenes
+            get => SceneHubCommonCacheAsset.instance.SelectedTab;
+            set => SceneHubCommonCacheAsset.instance.SelectedTab = value;
         }
-
-        private readonly string[] TOOL_BAR_TABS = new[] { PopupTabs.Libraries.ToString(), PopupTabs.ReferenceAssets.ToString(), PopupTabs.Scenes.ToString(), };
-
-        private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("Play", "Switch scene and start PlayMode.");
-        private readonly GUIContent PING_SCENE_ASSET_CONTENT = new GUIContent("P", "Ping in project tab.");
-        private readonly GUIContent BUILD_SCENE_ASSET_CONTENT = new GUIContent("B", "Add/Remove from build scenes list.");
-
-        [SerializeField] private PopupTabs _selectedTab;
 
         private Vector2 _scroll;
 
@@ -61,7 +64,7 @@ namespace SceneHub.Editor
         {
             EditorGUILayout.Space();
 
-            _selectedTab = (PopupTabs)GUILayout.Toolbar((int)_selectedTab, TOOL_BAR_TABS);
+            SelectedTab = EditorGUILayoutUtility.DrawTabToolbar(SelectedTab);
 
             EditorGUILayout.Space();
 
@@ -69,13 +72,15 @@ namespace SceneHub.Editor
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             {
-                switch (_selectedTab)
+                switch (SelectedTab)
                 {
                     case PopupTabs.Libraries:
                         DrawLibraries();
                         break;
-
-                    case PopupTabs.ReferenceAssets:
+                    case PopupTabs.Favorites:
+                        DrawFavoriteScenes();
+                        break;
+                    case PopupTabs.References:
                         DrawReferences();
                         break;
                     case PopupTabs.Scenes:
@@ -101,13 +106,13 @@ namespace SceneHub.Editor
             }
         }
 
-        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName, Color color)
+        private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName)
         {
             var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneReference?.ScenePath);
-            DrawSceneAssetMenu(scene, displayName, color);
+            DrawSceneAssetMenu(scene, displayName);
         }
 
-        private void DrawSceneAssetMenu(SceneAsset scene, string displayName, Color color)
+        private void DrawSceneAssetMenu(SceneAsset scene, string displayName)
         {
             var guiState = GUI.enabled;
             GUI.enabled = scene;
@@ -116,22 +121,9 @@ namespace SceneHub.Editor
                 {
                     var guiColor = GUI.color;
 
-                    GUI.color = guiColor * color;
                     if (GUILayout.Button(displayName))
                     {
                         Change(scene, false);
-                    }
-
-                    GUI.color = Color.yellow;
-                    if (GUILayout.Button(BUILD_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        SceneManagementUtility.ToggleBuildStatus(scene);
-                    }
-
-                    GUI.color = Color.cyan;
-                    if (GUILayout.Button(PING_SCENE_ASSET_CONTENT, GUILayout.Width(18f)))
-                    {
-                        EditorGUIUtility.PingObject(scene);
                     }
 
                     GUI.color = Color.green;
@@ -141,11 +133,54 @@ namespace SceneHub.Editor
                         Change(scene, true);
                     }
 
+                    GUI.color = Color.yellow;
+
+                    if (GUILayout.Button(MENU_CONTENT, GUILayout.Width(24f)))
+                    {
+                        var menu = GetSceneMenu(scene);
+                        menu.ShowAsContext();
+                    }
+
                     GUI.color = guiColor;
                 }
                 EditorGUILayout.EndHorizontal();
             }
             GUI.enabled = guiState;
+        }
+
+        private GenericMenu GetSceneMenu(SceneAsset scene)
+        {
+            var menu = new GenericMenu();
+
+            menu.AddItem(PING_SCENE_ASSET_CONTENT, false, () => EditorGUIUtility.PingObject(scene));
+
+            BuildContextMenuForFavoriteScene(menu, scene);
+            BuildContextMenuForBuildScene(menu, scene);
+
+            return menu;
+        }
+
+        private void BuildContextMenuForBuildScene(GenericMenu menu, SceneAsset scene)
+        {
+            var isInBuildList = SceneManagementUtility.IsBuildScene(scene);
+            if (isInBuildList)
+            {
+                menu.AddItem(REMOVE_FROM_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.RemoveFromBuildList(scene));
+
+                var enabledInBuildList = SceneManagementUtility.IsEnabledInBuildList(scene);
+                if (enabledInBuildList)
+                {
+                    menu.AddItem(DISBLE_IN_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.SetEnabledInBuildList(scene, false));
+                }
+                else
+                {
+                    menu.AddItem(ENABLE_IN_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.SetEnabledInBuildList(scene, true));
+                }
+            }
+            else
+            {
+                menu.AddItem(ADD_TO_BUILD_SCENE_LIST_CONTENT, false, () => SceneManagementUtility.AddToBuildList(scene));
+            }
         }
 
         private void Change(SceneAsset scene, bool needStartPlaymode)

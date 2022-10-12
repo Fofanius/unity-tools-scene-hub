@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SceneHub.Editor.Utilities;
 using SceneHub.Utilities;
 using UnityEditor;
 
@@ -23,7 +24,7 @@ namespace SceneHub.Editor
             {
                 foreach (var reference in _references)
                 {
-                    DrawSceneReferenceMenu(reference, reference.name, reference.DisplayColor);
+                    DrawSceneReferenceMenu(reference, reference.name);
                 }
             }
         }
