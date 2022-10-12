@@ -15,12 +15,6 @@ MonoBehaviour:
   _title: Game Levels
   _sortingOrder: 0
   _scenes:
-  - _title: adasdas
-    _scenePath: Assets/Testing/Scenes/Levels/Level 1.unity
-    _sceneAsset: {fileID: 102900000, guid: d10171a129ac07547acf42df579afbb8, type: 3}
-  - _title: 
-    _scenePath: Assets/Testing/Scenes/Levels/Level 2.unity
-    _sceneAsset: {fileID: 102900000, guid: fa6f69322855bf54e87eb626d205321a, type: 3}
-  - _title: Bonus Level
-    _scenePath: Assets/Testing/Scenes/Levels/Level 3.unity
-    _sceneAsset: {fileID: 102900000, guid: 2ab11d8f1df95e041a4af26d355cf629, type: 3}
+  - {fileID: 11400000, guid: bca61a036bd1e0e448a80675d730541c, type: 2}
+  - {fileID: 11400000, guid: c514205b24f83e14c89f91012a21c6e6, type: 2}
+  - {fileID: 11400000, guid: b2796279a6aca254da02828330641f19, type: 2}

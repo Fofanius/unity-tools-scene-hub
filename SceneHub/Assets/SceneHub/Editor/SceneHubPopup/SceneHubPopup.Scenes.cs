@@ -3,7 +3,6 @@ using System.Linq;
 using SceneHub.Editor.Utilities;
 using SceneHub.Utilities;
 using UnityEditor;
-using UnityEngine;
 
 namespace SceneHub.Editor
 {
@@ -26,7 +25,7 @@ namespace SceneHub.Editor
             {
                 foreach (var scene in _scenes)
                 {
-                    DrawSceneAssetMenu(scene, scene.name, Color.white);
+                    DrawSceneAssetMenu(scene, scene.name);
                 }
             }
         }
