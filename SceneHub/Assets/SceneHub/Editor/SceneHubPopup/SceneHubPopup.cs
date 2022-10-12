@@ -109,10 +109,10 @@ namespace SceneHub.Editor
         private void DrawSceneReferenceMenu(ISceneReference sceneReference, string displayName)
         {
             var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneReference?.ScenePath);
-            DrawSceneAssetMenu(scene, displayName);
+            DrawSceneAssetMenu(scene, displayName, sceneReference?.ScenePath);
         }
 
-        private void DrawSceneAssetMenu(SceneAsset scene, string displayName)
+        private void DrawSceneAssetMenu(SceneAsset scene, string displayName, string tooltip = "")
         {
             var guiState = GUI.enabled;
             GUI.enabled = scene;
@@ -121,7 +121,7 @@ namespace SceneHub.Editor
                 {
                     var guiColor = GUI.color;
 
-                    if (GUILayout.Button(displayName))
+                    if (GUILayout.Button(new GUIContent(displayName, tooltip)))
                     {
                         Change(scene, false);
                     }

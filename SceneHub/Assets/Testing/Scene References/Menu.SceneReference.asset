@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneAsset: {fileID: 102900000, guid: b4415d99d4d9b6640ad5140e06fc3a95, type: 3}
   _scenePath: Assets/Testing/Scenes/UI Scenes/Menu.unity
-  _displayColor: {r: 1, g: 1, b: 1, a: 1}
+  _sceneName: Menu
