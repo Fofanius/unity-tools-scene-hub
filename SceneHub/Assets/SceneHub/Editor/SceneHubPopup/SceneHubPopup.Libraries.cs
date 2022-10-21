@@ -10,8 +10,6 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup
     {
-        private readonly GUIContent LOAD_LIBRARY = new GUIContent("↡", "Load all scenes.");
-
         private List<SceneLibraryAsset> _assets;
 
         private void RefreshLibraries()
@@ -58,9 +56,9 @@ namespace SceneHub.Editor
                     var c = GUI.color;
                     GUI.color = new Color(.6f, .77f, .92f);
                     {
-                        if (GUILayout.Button(LOAD_LIBRARY, GUILayout.Width(24f)))
+                        if (GUILayout.Button(SceneHubGUIContent.SceneLibraryOptions.LoadAllScenes, GUILayout.Width(24f)))
                         {
-                            SceneManagementUtility.LoadAll(asset);
+                            Change(asset);
                         }
                     }
                     GUI.color = c;
@@ -82,6 +80,12 @@ namespace SceneHub.Editor
                 }
             }
             EditorGUILayout.EndVertical();
+        }
+
+        private void Change(SceneLibraryAsset libraryAsset)
+        {
+            SceneManagementUtility.LoadAll(libraryAsset);
+            Close();
         }
     }
 }
