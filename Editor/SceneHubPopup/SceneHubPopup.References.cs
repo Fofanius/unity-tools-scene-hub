@@ -18,7 +18,7 @@ namespace SceneHub.Editor
         {
             if (_references.IsNullOrEmpty())
             {
-                EditorGUILayout.LabelField("There is no references in projects . . .");
+                EditorGUILayout.LabelField("There is no references in project ...");
             }
             else
             {

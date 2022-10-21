@@ -10,12 +10,11 @@ namespace SceneHub.Editor
             var assetPath = UnityEditor.AssetDatabase.GetAssetPath(instanceID);
             var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<SceneReferenceAsset>(assetPath);
 
-            if (asset)
-            {
-                SceneManagementUtility.ChangeScene(asset.ScenePath);
-            }
+            if (!asset || !asset.IsValid) return false;
 
-            return false;
+            SceneManagementUtility.ChangeScene(asset.ScenePath);
+
+            return true;
         }
     }
 }
