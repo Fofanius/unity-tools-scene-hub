@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SceneHub
 {
-    [CreateAssetMenu(menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
+    [CreateAssetMenu(menuName = "Scene Hub/Scene Library")]
     public sealed class SceneLibraryAsset : ScriptableObject
     {
 #pragma warning disable 0649
@@ -27,7 +27,7 @@ namespace SceneHub
         public int SortingOrder => _sortingOrder;
 
         public bool IsValid() => Scenes.Count > 0 && Scenes.All(x => x && x.IsValid);
-        
+
         /// <summary>
         /// Library scenes.
         /// </summary>
