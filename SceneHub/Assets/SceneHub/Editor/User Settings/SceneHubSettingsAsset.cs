@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace SceneHub.Editor.UserSettings
 {
-    [FilePath("UserSettings/SceneHub/Common.asset", FilePathAttribute.Location.ProjectFolder)]
-    public class SceneHubCommonCacheAsset : ScriptableSingleton<SceneHubCommonCacheAsset>
+    [FilePath("UserSettings/SceneHub/SceneHubSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+    public class SceneHubSettingsAsset : UserSettingsAsset<SceneHubSettingsAsset>
     {
         [SerializeField] private PopupTabs _selectedTab;
         
