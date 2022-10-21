@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace SceneHub.Editor.UserSettings
 {
-    [FilePath("UserSettings/SceneHub/FavoriteScenes.asset", FilePathAttribute.Location.ProjectFolder)]
-    internal class SceneHubFavoriteScenesCacheAsset : ScriptableSingleton<SceneHubFavoriteScenesCacheAsset>, IReadOnlyList<SceneAsset>
+    [FilePath("UserSettings/SceneHub/SceneHubSettings - FavoriteScenes.asset", FilePathAttribute.Location.ProjectFolder)]
+    internal class SceneHubFavoriteScenesSettingsAsset : UserSettingsAsset<SceneHubFavoriteScenesSettingsAsset>, IReadOnlyList<SceneAsset>
     {
         [SerializeField] private List<SceneAsset> _favoriteScenes;
 

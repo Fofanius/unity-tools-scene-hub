@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SceneHub.Editor.UserSettings;
 using SceneHub.Editor.Utilities;
 using UnityEditor;
@@ -9,6 +9,7 @@ namespace SceneHub.Editor
     public partial class SceneHubPopup : EditorWindow
     {
         private const string BUILD_LIST_MENU_CATEGORY = "Build list";
+        private const string UNITY_MENU = "Tools/Scene Hub/Move To %&q";
 
         private readonly GUIContent MOVE_AND_PLAY_CONTENT = new GUIContent("▶", "Switch scene and start PlayMode.");
         private readonly GUIContent MENU_CONTENT = new GUIContent("☰", "Additional options for current scene.");
@@ -19,18 +20,21 @@ namespace SceneHub.Editor
         private readonly GUIContent ENABLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Enable", "Enable scene in build scene list.");
         private readonly GUIContent DISBLE_IN_BUILD_SCENE_LIST_CONTENT = new GUIContent($"{BUILD_LIST_MENU_CATEGORY}/Disable", "Disable scene in build scene list.");
 
+        private Vector2 _scroll;
+
+        private SceneHubSettingsAsset Settings => SceneHubSettingsAsset.instance;
 
         private PopupTabs SelectedTab
         {
-            get => SceneHubCommonCacheAsset.instance.SelectedTab;
-            set => SceneHubCommonCacheAsset.instance.SelectedTab = value;
+            get => Settings.SelectedTab;
+            set => Settings.SelectedTab = value;
         }
 
         private Vector2 _scroll;
 
         private static bool IsEditorFree => !EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isCompiling;
 
-        [MenuItem("Scene Hub/Move To %&q", priority = 100)]
+        [MenuItem(UNITY_MENU, priority = 47_000)]
         public static void ShowWindow()
         {
             var popup = GetWindow<SceneHubPopup>(true);
@@ -46,11 +50,17 @@ namespace SceneHub.Editor
             // popup.ShowModalUtility();
         }
 
-        [MenuItem("Scene Hub/Move To %&q", true)] private static bool ShowValidate() => IsEditorFree;
+        [MenuItem(UNITY_MENU, true)] private static bool ShowValidate() => IsEditorFree;
 
         private void OnEnable()
         {
             RefreshAll();
+        }
+
+        private void OnDisable()
+        {
+            FavoriteScenesSettings.SaveChanges();
+            Settings.SaveChanges();
         }
 
         private void RefreshAll()
