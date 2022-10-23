@@ -14,7 +14,7 @@ namespace SceneHub.Editor
 
         private void RefreshLibraries()
         {
-            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibraryAsset>(asset => asset.Scenes != default).ToList();
+            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibraryAsset>(asset => asset.SceneReferences != default).ToList();
             _assets.Sort(AssetsComparer);
         }
 
@@ -65,7 +65,7 @@ namespace SceneHub.Editor
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (asset.Scenes.IsNullOrEmpty())
+                if (asset.SceneReferences.IsNullOrEmpty())
                 {
                     EditorGUILayout.LabelField("The collection of scenes is empty.");
                 }
@@ -73,7 +73,7 @@ namespace SceneHub.Editor
                 {
                     EditorGUILayout.Space();
 
-                    foreach (var info in asset.Scenes)
+                    foreach (var info in asset.SceneReferences)
                     {
                         DrawSceneReferenceMenu(info, info ? info.SceneName : "NULL");
                     }
