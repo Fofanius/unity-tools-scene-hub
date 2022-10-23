@@ -14,25 +14,33 @@ namespace SceneHub.Editor.Utilities
 
         internal static void ChangeScene(string scenePath)
         {
-            SaveActiveScene();
+            SaveCurrentScenes();
             EditorSceneManager.OpenScene(scenePath);
         }
 
-        private static void SaveActiveScene()
+        private static void SaveCurrentScenes()
         {
-            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+            for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+            {
+                var scene = EditorSceneManager.GetSceneAt(i);
+
+                if (scene.IsValid() && scene.isDirty)
+                {
+                    EditorSceneManager.SaveScene(scene);
+                }
+            }
         }
 
         internal static void LoadAll(SceneLibraryAsset libraryAsset)
         {
-            SaveActiveScene();
+            SaveCurrentScenes();
 
-            var scenesToLoad = libraryAsset.Scenes.Where(x => x && x.IsValid).ToList();
-            if (scenesToLoad.Count == 0) return;
+            if (libraryAsset.IsNullOrInvalid()) return;
+            var scenesToLoad = libraryAsset.GetValidScenes().ToList();
 
-            for (int i = 0; i < scenesToLoad.Count; i++)
+            for (var i = 0; i < scenesToLoad.Count; i++)
             {
-                EditorSceneManager.OpenScene(scenesToLoad[i].ScenePath, i == 0 ? OpenSceneMode.Single : OpenSceneMode.Additive);
+                EditorSceneManager.OpenScene(scenesToLoad[i], i == 0 ? OpenSceneMode.Single : OpenSceneMode.Additive);
             }
         }
 
