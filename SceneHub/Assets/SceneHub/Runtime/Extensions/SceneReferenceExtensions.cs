@@ -75,5 +75,7 @@ namespace SceneHub
         {
             return referenceToCheck.ScenePath == scene.path;
         }
+
+        public static bool IsNullOrInvalid(this ISceneReference sceneReference) => sceneReference == null || !sceneReference.IsValid;
     }
 }

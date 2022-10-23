@@ -13,7 +13,7 @@ namespace SceneHub
         [Tooltip("Display order in the hub-popup.")]
         [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
-        [SerializeField] private List<SceneReferenceAsset> _scenes;
+        [SerializeField] private List<SceneReferenceAsset> _sceneReferences;
 #pragma warning restore 0649
 
         /// <summary>
@@ -26,11 +26,16 @@ namespace SceneHub
         /// </summary>
         public int SortingOrder => _sortingOrder;
 
-        public bool IsValid() => Scenes.Count > 0 && Scenes.All(x => x && x.IsValid);
+        public bool IsValid() => SceneReferences.Count(x => !x.IsNullOrInvalid()) > 0;
 
         /// <summary>
         /// Library scenes.
         /// </summary>
-        public IReadOnlyList<SceneReferenceAsset> Scenes => _scenes ??= new List<SceneReferenceAsset>();
+        public IReadOnlyList<SceneReferenceAsset> SceneReferences => _sceneReferences ??= new List<SceneReferenceAsset>();
+
+        public IEnumerable<string> GetValidScenes()
+        {
+            return SceneReferences.Where(x => !x.IsNullOrInvalid()).Select(x => x.ScenePath);
+        }
     }
 }

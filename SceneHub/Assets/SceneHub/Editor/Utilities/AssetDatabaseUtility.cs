@@ -44,6 +44,14 @@ namespace SceneHub.Editor.Utilities
 
             return assets;
         }
+        
+        internal static T GetAssetByID<T>(int instanceID) where T : UnityEngine.Object
+        {
+            var assetPath = AssetDatabase.GetAssetPath(instanceID);
+            var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+
+            return asset;
+        }
 
         /// <summary>
         /// Последовательный вызов <see cref="AssetDatabase.Refresh()"/> и <see cref="AssetDatabase.SaveAssets()"/>.
