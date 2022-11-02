@@ -15,13 +15,6 @@ namespace SceneHub.Editor
         private void RefreshLibraries()
         {
             _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibraryAsset>(asset => asset.SceneReferences != default).ToList();
-            _assets.Sort(AssetsComparer);
-        }
-
-        private static int AssetsComparer(SceneLibraryAsset a, SceneLibraryAsset b)
-        {
-            var orderCompareResult = a.SortingOrder.CompareTo(b.SortingOrder);
-            return orderCompareResult == default ? string.Compare(a.Title, b.Title, StringComparison.Ordinal) : orderCompareResult;
         }
 
         private void DrawLibraries()
@@ -48,7 +41,7 @@ namespace SceneHub.Editor
             {
                 EditorGUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button(asset.GetLibraryDisplayName(), EditorStyles.boldLabel))
+                    if (GUILayout.Button(asset.name, EditorStyles.boldLabel))
                     {
                         EditorGUIUtility.PingObject(asset);
                     }

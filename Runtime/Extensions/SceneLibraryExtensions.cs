@@ -38,12 +38,12 @@ namespace SceneHub
         {
             ValidateSceneLibrary(libraryAsset, mainSceneIndex);
 
-            SceneManager.LoadScene(libraryAsset.SceneReferences[mainSceneIndex].ScenePath, LoadSceneMode.Single);
+            libraryAsset.SceneReferences[mainSceneIndex].Load(LoadSceneMode.Single);
 
             for (var i = 0; i < libraryAsset.SceneReferences.Count; i++)
             {
                 if (i == mainSceneIndex) continue;
-                SceneManager.LoadScene(libraryAsset.SceneReferences[i].ScenePath, LoadSceneMode.Additive);
+                libraryAsset.SceneReferences[i].Load(LoadSceneMode.Additive);
             }
 
             loadEndCallback?.Invoke();
@@ -61,12 +61,12 @@ namespace SceneHub
         {
             ValidateSceneLibrary(libraryAsset, mainSceneIndex);
 
-            yield return SceneManager.LoadSceneAsync(libraryAsset.SceneReferences[mainSceneIndex].ScenePath, LoadSceneMode.Single);
+            yield return libraryAsset.SceneReferences[mainSceneIndex].LoadAsync(LoadSceneMode.Single);
 
             for (var i = 0; i < libraryAsset.SceneReferences.Count; i++)
             {
                 if (i == mainSceneIndex) continue;
-                yield return SceneManager.LoadSceneAsync(libraryAsset.SceneReferences[i].ScenePath, LoadSceneMode.Additive);
+                yield return libraryAsset.SceneReferences[i].LoadAsync(LoadSceneMode.Additive);
             }
         }
 
