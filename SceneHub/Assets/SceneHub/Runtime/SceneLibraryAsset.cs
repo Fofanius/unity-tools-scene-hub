@@ -7,24 +7,8 @@ namespace SceneHub
     [CreateAssetMenu(menuName = "Scene Hub/Scene Library")]
     public sealed class SceneLibraryAsset : ScriptableObject
     {
-#pragma warning disable 0649
-        [Tooltip("Library custom name.")]
-        [SerializeField] private string _title;
-        [Tooltip("Display order in the hub-popup.")]
-        [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
         [SerializeField] private List<SceneReferenceAsset> _sceneReferences;
-#pragma warning restore 0649
-
-        /// <summary>
-        /// Library custom title.
-        /// </summary>
-        public string Title => _title;
-
-        /// <summary>
-        /// Library display sorting order.
-        /// </summary>
-        public int SortingOrder => _sortingOrder;
 
         public bool IsValid() => SceneReferences.Count(x => !x.IsNullOrInvalid()) > 0;
 
