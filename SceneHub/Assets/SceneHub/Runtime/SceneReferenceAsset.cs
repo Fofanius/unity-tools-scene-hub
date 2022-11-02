@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SceneHub
 {
-    [CreateAssetMenu(fileName = "Scene Reference.asset", menuName = "Scene Hub/Scene Reference", order = int.MaxValue)]
+    [CreateAssetMenu(menuName = "Scene Hub/Scene Reference")]
     public sealed class SceneReferenceAsset : ScriptableObject, ISceneReference
     {
 #if UNITY_EDITOR

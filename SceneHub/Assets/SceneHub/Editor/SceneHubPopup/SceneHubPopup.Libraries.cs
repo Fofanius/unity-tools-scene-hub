@@ -10,20 +10,11 @@ namespace SceneHub.Editor
 {
     public partial class SceneHubPopup
     {
-        private readonly GUIContent LOAD_LIBRARY = new GUIContent("↡", "Load all scenes.");
-
         private List<SceneLibraryAsset> _assets;
 
         private void RefreshLibraries()
         {
-            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibraryAsset>(asset => asset.Scenes != default).ToList();
-            _assets.Sort(AssetsComparer);
-        }
-
-        private static int AssetsComparer(SceneLibraryAsset a, SceneLibraryAsset b)
-        {
-            var orderCompareResult = a.SortingOrder.CompareTo(b.SortingOrder);
-            return orderCompareResult == default ? string.Compare(a.Title, b.Title, StringComparison.Ordinal) : orderCompareResult;
+            _assets = AssetDatabaseUtility.FindAssetsByType<SceneLibraryAsset>(asset => asset.SceneReferences != default).ToList();
         }
 
         private void DrawLibraries()
@@ -50,7 +41,7 @@ namespace SceneHub.Editor
             {
                 EditorGUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button(asset.GetLibraryDisplayName(), EditorStyles.boldLabel))
+                    if (GUILayout.Button(asset.name, EditorStyles.boldLabel))
                     {
                         EditorGUIUtility.PingObject(asset);
                     }
@@ -58,16 +49,16 @@ namespace SceneHub.Editor
                     var c = GUI.color;
                     GUI.color = new Color(.6f, .77f, .92f);
                     {
-                        if (GUILayout.Button(LOAD_LIBRARY, GUILayout.Width(24f)))
+                        if (GUILayout.Button(SceneHubGUIContent.SceneLibraryOptions.LoadAllScenes, GUILayout.Width(24f)))
                         {
-                            SceneManagementUtility.LoadAll(asset);
+                            Change(asset);
                         }
                     }
                     GUI.color = c;
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (asset.Scenes.IsNullOrEmpty())
+                if (asset.SceneReferences.IsNullOrEmpty())
                 {
                     EditorGUILayout.LabelField("The collection of scenes is empty.");
                 }
@@ -75,13 +66,19 @@ namespace SceneHub.Editor
                 {
                     EditorGUILayout.Space();
 
-                    foreach (var info in asset.Scenes)
+                    foreach (var info in asset.SceneReferences)
                     {
                         DrawSceneReferenceMenu(info, info ? info.SceneName : "NULL");
                     }
                 }
             }
             EditorGUILayout.EndVertical();
+        }
+
+        private void Change(SceneLibraryAsset libraryAsset)
+        {
+            SceneManagementUtility.LoadAll(libraryAsset);
+            Close();
         }
     }
 }

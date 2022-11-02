@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 namespace SceneHub
@@ -13,14 +14,14 @@ namespace SceneHub
                 throw new ArgumentNullException(nameof(libraryAsset));
             }
 
-            if (libraryAsset.IsValid())
+            if (libraryAsset.SceneReferences.Any(x => x.IsNullOrInvalid()))
             {
-                throw new ArgumentException($"Scene library {libraryAsset} is invalid!");
+                throw new ArgumentException($"Scene library {libraryAsset} contains invalid references!");
             }
 
-            if (mainSceneIndex < 0 || mainSceneIndex >= libraryAsset.Scenes.Count)
+            if (mainSceneIndex < 0 || mainSceneIndex >= libraryAsset.SceneReferences.Count)
             {
-                throw new IndexOutOfRangeException($"Main scene index \'{mainSceneIndex}\' out of range {libraryAsset.Scenes.Count}");
+                throw new IndexOutOfRangeException($"Main scene index \'{mainSceneIndex}\' out of range {libraryAsset.SceneReferences.Count}");
             }
         }
 
@@ -37,12 +38,12 @@ namespace SceneHub
         {
             ValidateSceneLibrary(libraryAsset, mainSceneIndex);
 
-            SceneManager.LoadScene(libraryAsset.Scenes[mainSceneIndex].ScenePath, LoadSceneMode.Single);
+            libraryAsset.SceneReferences[mainSceneIndex].Load(LoadSceneMode.Single);
 
-            for (var i = 0; i < libraryAsset.Scenes.Count; i++)
+            for (var i = 0; i < libraryAsset.SceneReferences.Count; i++)
             {
                 if (i == mainSceneIndex) continue;
-                SceneManager.LoadScene(libraryAsset.Scenes[i].ScenePath, LoadSceneMode.Additive);
+                libraryAsset.SceneReferences[i].Load(LoadSceneMode.Additive);
             }
 
             loadEndCallback?.Invoke();
@@ -60,13 +61,15 @@ namespace SceneHub
         {
             ValidateSceneLibrary(libraryAsset, mainSceneIndex);
 
-            yield return SceneManager.LoadSceneAsync(libraryAsset.Scenes[mainSceneIndex].ScenePath, LoadSceneMode.Single);
+            yield return libraryAsset.SceneReferences[mainSceneIndex].LoadAsync(LoadSceneMode.Single);
 
-            for (var i = 0; i < libraryAsset.Scenes.Count; i++)
+            for (var i = 0; i < libraryAsset.SceneReferences.Count; i++)
             {
                 if (i == mainSceneIndex) continue;
-                yield return SceneManager.LoadSceneAsync(libraryAsset.Scenes[i].ScenePath, LoadSceneMode.Additive);
+                yield return libraryAsset.SceneReferences[i].LoadAsync(LoadSceneMode.Additive);
             }
         }
+
+        public static bool IsNullOrInvalid(this SceneLibraryAsset libraryAsset) => !libraryAsset || !libraryAsset.IsValid();
     }
 }

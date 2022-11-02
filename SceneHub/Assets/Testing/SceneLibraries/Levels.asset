@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: Game Levels
   _sortingOrder: 0
-  _scenes:
+  _sceneReferences:
   - {fileID: 11400000, guid: bca61a036bd1e0e448a80675d730541c, type: 2}
   - {fileID: 11400000, guid: c514205b24f83e14c89f91012a21c6e6, type: 2}
   - {fileID: 11400000, guid: b2796279a6aca254da02828330641f19, type: 2}

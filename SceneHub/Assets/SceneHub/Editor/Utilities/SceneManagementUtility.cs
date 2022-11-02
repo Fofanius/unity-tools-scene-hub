@@ -6,30 +6,41 @@ namespace SceneHub.Editor.Utilities
 {
     internal static class SceneManagementUtility
     {
-        /// <summary>
-        /// Сохраняет текущую активную сцену и осуществляет переход на заданную.
-        /// </summary>
+        public static EditorBuildSettingsScene[] BuildScenes
+        {
+            get => EditorBuildSettings.scenes;
+            set => EditorBuildSettings.scenes = value;
+        }
+
         internal static void ChangeScene(string scenePath)
         {
-            SaveActiveScene();
+            SaveCurrentScenes();
             EditorSceneManager.OpenScene(scenePath);
         }
 
-        private static void SaveActiveScene()
+        private static void SaveCurrentScenes()
         {
-            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+            for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+            {
+                var scene = EditorSceneManager.GetSceneAt(i);
+
+                if (scene.IsValid() && scene.isDirty)
+                {
+                    EditorSceneManager.SaveScene(scene);
+                }
+            }
         }
 
         internal static void LoadAll(SceneLibraryAsset libraryAsset)
         {
-            SaveActiveScene();
+            SaveCurrentScenes();
 
-            var scenesToLoad = libraryAsset.Scenes.Where(x => x && x.IsValid).ToList();
-            if (scenesToLoad.Count == 0) return;
+            if (libraryAsset.IsNullOrInvalid()) return;
+            var scenesToLoad = libraryAsset.GetValidScenes().ToList();
 
-            for (int i = 0; i < scenesToLoad.Count; i++)
+            for (var i = 0; i < scenesToLoad.Count; i++)
             {
-                EditorSceneManager.OpenScene(scenesToLoad[i].ScenePath, i == 0 ? OpenSceneMode.Single : OpenSceneMode.Additive);
+                EditorSceneManager.OpenScene(scenesToLoad[i], i == 0 ? OpenSceneMode.Single : OpenSceneMode.Additive);
             }
         }
 
@@ -45,7 +56,7 @@ namespace SceneHub.Editor.Utilities
 
         internal static bool IsBuildScene(string scenePath)
         {
-            return EditorBuildSettings.scenes.Select(x => x.path).Contains(scenePath);
+            return BuildScenes.Select(x => x.path).Contains(scenePath);
         }
 
         internal static void AddToBuildList(SceneAsset scene) => AddToBuildList(AssetDatabase.GetAssetPath(scene));
@@ -55,7 +66,7 @@ namespace SceneHub.Editor.Utilities
             if (IsBuildScene(scenePath)) return;
 
             var editorBuildScene = new EditorBuildSettingsScene(scenePath, true);
-            EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(editorBuildScene).ToArray();
+            BuildScenes = BuildScenes.Append(editorBuildScene).ToArray();
 
             Logger.Log($"Scene '{scenePath}' <b>added</b> to build scene list.");
         }
@@ -64,7 +75,7 @@ namespace SceneHub.Editor.Utilities
 
         internal static void RemoveFromBuildList(string scenePath)
         {
-            EditorBuildSettings.scenes = EditorBuildSettings.scenes.Where(x => x.path != scenePath).ToArray();
+            BuildScenes = BuildScenes.Where(x => x.path != scenePath).ToArray();
             Logger.Log($"Scene '{scenePath}' <b>removed</b> from build scene list.");
         }
 
@@ -72,14 +83,14 @@ namespace SceneHub.Editor.Utilities
 
         internal static void SetEnabledInBuildList(string scenePath, bool enabled)
         {
-            var scenes = EditorBuildSettings.scenes.ToArray();
+            var scenes = BuildScenes.ToArray();
 
             var buildScene = scenes.FirstOrDefault(x => x.path == scenePath);
             if (buildScene == default) return;
 
             buildScene.enabled = enabled;
 
-            EditorBuildSettings.scenes = scenes;
+            BuildScenes = scenes;
 
             Logger.Log($"Scene '{scenePath}' <b>{(enabled ? "enabled" : "disabled")}</b> in build scene list.");
         }
@@ -88,7 +99,7 @@ namespace SceneHub.Editor.Utilities
 
         internal static bool IsEnabledInBuildList(string scenePath)
         {
-            var buildScene = EditorBuildSettings.scenes.FirstOrDefault(x => x.path == scenePath);
+            var buildScene = BuildScenes.FirstOrDefault(x => x.path == scenePath);
             return buildScene?.enabled ?? false;
         }
     }

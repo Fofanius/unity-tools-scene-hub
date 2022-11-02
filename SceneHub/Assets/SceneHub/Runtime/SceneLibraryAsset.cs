@@ -4,33 +4,22 @@ using UnityEngine;
 
 namespace SceneHub
 {
-    [CreateAssetMenu(menuName = "Scene Hub/Scene Library", order = int.MaxValue)]
+    [CreateAssetMenu(menuName = "Scene Hub/Scene Library")]
     public sealed class SceneLibraryAsset : ScriptableObject
     {
-#pragma warning disable 0649
-        [Tooltip("Library custom name.")]
-        [SerializeField] private string _title;
-        [Tooltip("Display order in the hub-popup.")]
-        [SerializeField] private int _sortingOrder;
         [Tooltip("Library scenes collection.")]
-        [SerializeField] private List<SceneReferenceAsset> _scenes;
-#pragma warning restore 0649
+        [SerializeField] private List<SceneReferenceAsset> _sceneReferences;
 
-        /// <summary>
-        /// Library custom title.
-        /// </summary>
-        public string Title => _title;
+        public bool IsValid() => SceneReferences.Count(x => !x.IsNullOrInvalid()) > 0;
 
-        /// <summary>
-        /// Library display sorting order.
-        /// </summary>
-        public int SortingOrder => _sortingOrder;
-
-        public bool IsValid() => Scenes.Count > 0 && Scenes.All(x => x && x.IsValid);
-        
         /// <summary>
         /// Library scenes.
         /// </summary>
-        public IReadOnlyList<SceneReferenceAsset> Scenes => _scenes ??= new List<SceneReferenceAsset>();
+        public IReadOnlyList<SceneReferenceAsset> SceneReferences => _sceneReferences ??= new List<SceneReferenceAsset>();
+
+        public IEnumerable<string> GetValidScenes()
+        {
+            return SceneReferences.Where(x => !x.IsNullOrInvalid()).Select(x => x.ScenePath);
+        }
     }
 }
