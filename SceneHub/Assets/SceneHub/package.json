@@ -1,7 +1,7 @@
 {
   "name": "com.fofanius.scenehub",
   "displayName": "Fofanius - Scene Hub",
-  "version": "1.1.0",
-  "unity": "2019.4",
+  "version": "1.2.2",
+  "unity": "2022.1",
   "description": "Utility that help you to switch between scenes."
 }
