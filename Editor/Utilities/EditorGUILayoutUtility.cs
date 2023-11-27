@@ -5,7 +5,7 @@ namespace SceneHub.Editor.Utilities
 {
     internal static class EditorGUILayoutUtility
     {
-        public static T DrawTabToolbar<T>(T current) where T : Enum
+        public static T DrawTabToolbar<T>(T current) where T : struct, Enum
         {
             var type = typeof(T);
 
